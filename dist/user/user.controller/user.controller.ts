@@ -71,8 +71,17 @@ export const userSignupController = async (
 ): Promise<any> => {  // 반환 타입을 Promise<void>로 설정
     try {
         const info: UserDto = req.body;
-        const token = req.headers.authorization?.split(' ')[0];
+        const token = req.headers.authorization?.split(' ')[1];
+        
+        console.log("들어옴");
+
         const user_id = decodeTokenUserId(token) as number;
+
+        if(user_id === null) {
+            return res.status(403).json({ message: '토큰이 유효하지 않습니다.' });
+        }
+
+        console.log("User ID : ", user_id);
 
         // 필수 값 검증
         const missingFields: string[] = [];

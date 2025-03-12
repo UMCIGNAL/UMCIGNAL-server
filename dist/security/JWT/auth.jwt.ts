@@ -25,7 +25,7 @@ export const authenticateToken = async (
         });
       });
   
-      req.body.student_id = (decoded as any).student_id; // decoded 정보를 사용하여 필요한 작업 수행
+      req.body.user_id = (decoded as any).user_id; // decoded 정보를 사용하여 필요한 작업 수행
       next();
     } catch (err) {
       res.status(403).json({ message: 'Invalid token' });
@@ -35,13 +35,13 @@ export const authenticateToken = async (
   export const decodeTokenUserId = (token?: string): number | null => {
     try {
       if (!token) return null; // token이 없으면 null 반환
-  
+
       const decoded = jwt.decode(token);
-  
+
       if (!decoded || typeof decoded !== 'object') {
         return null; // 잘못된 토큰이면 null 반환
       }
-  
+
       return (decoded as any).user_id || null; // user_id가 없으면 null 반환
     } catch (error) {
       console.error(error);
