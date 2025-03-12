@@ -76,7 +76,7 @@ export const userSignupModel = async (
             instagram_id = ?, 
             updated_at = ? 
         WHERE user_id = ?
-    `;;
+    `;
 
     const [insertResult] = await pool.query<ResultSetHeader>(query, [
         info.gender,
