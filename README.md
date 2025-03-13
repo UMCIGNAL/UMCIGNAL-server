@@ -1,6 +1,6 @@
 # UMCignal
 
-- [API 명세서](https://www.notion.so/API-1b39b58243c380109dcefc0a1c5b51f0)
+- [API 명세서](https://www.notion.so/makeus-challenge/API-1b3b57f4596b81cf9a65d09a11696623)
 
 ## **📚 Stack**
 
