@@ -1,5 +1,5 @@
 import express from 'express';
-import { mailVerifyController, sendMailCodeController, userLogOutController, userSignOutController, userSignupController, userWhoCameBackController } from './user.controller/user.controller';
+import { changeUserInfoController, mailVerifyController, sendMailCodeController, userLogOutController, userSignOutController, userSignupController, userWhoCameBackController } from './user.controller/user.controller';
 import { authenticateToken } from '../security/JWT/auth.jwt';
 
 const router = express.Router();
@@ -10,11 +10,12 @@ router.get('/', (req, res) => {
 
 router.post('/mailCode', sendMailCodeController); // 처음 로그인 시 사용 또는 다시 로그인 시도 시 사용
 router.post('/verify', mailVerifyController);   // 인증 코드 검증 및 토큰 발급
-router.patch('/signup', authenticateToken, userSignupController); // 이미 가입한 회원 처리 끝
+router.patch('/signup', authenticateToken, userSignupController); // 이미 가입한 회원 초기 정보 입력 
 
 router.patch('/logOut', authenticateToken, userLogOutController); // 로그아웃 처리
 router.patch('/signOut', authenticateToken, userSignOutController); // 회원탈퇴 처리
 // router.patch('/comebackUser', userWhoCameBackController); // 탈퇴한 회원 복구 처리 -> 필요 없음 기존 /mailCode 사용 가능
+router.patch('/changeInfo', authenticateToken, changeUserInfoController); // 회원 정보 수정
 
 /**
  * @swagger
@@ -118,7 +119,7 @@ router.patch('/signOut', authenticateToken, userSignOutController); // 회원탈
  * @swagger
  * /user/signup:
  *   patch:
- *     summary: 사용자 회원가입
+ *     summary: 사용자 회원가입 후 초기 정보 입력 <신규 회원에게만 적용할 것!!!>
  *     description: 사용자가 Mail의 검증이 끝났다면 회원 정보를 수정합니다. - 기존 회원이면 넘어가도 상관 없습니다.
  *     tags:
  *       - Verification
@@ -134,6 +135,9 @@ router.patch('/signOut', authenticateToken, userSignOutController); // 회원탈
  *               gender:
  *                 type: string
  *                 example: "Male"
+ *               name:       
+ *                 type: string  
+ *                 example: "고명준"   
  *               student_major:
  *                 type: string
  *                 example: "컴퓨터과학과"
@@ -273,6 +277,93 @@ router.patch('/signOut', authenticateToken, userSignOutController); // 회원탈
  *                   example: "로그인 되어있지 않습니다."
  *       500:
  *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "서버 오류가 발생했습니다."
+ */
+
+
+/**
+ * @swagger
+ * /user/changeInfo:
+ *   patch:
+ *     summary: "회원 정보 수정"
+ *     description: "사용자가 자신의 MBTI, 흡연 여부, 음주 여부, 인스타그램 아이디를 수정합니다."
+ *     tags:
+ *       - User
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - MBTI
+ *               - is_smoking
+ *               - is_drinking
+ *               - instagram_id
+ *             properties:
+ *               MBTI:
+ *                 type: string
+ *                 description: "사용자의 MBTI (예: 'INTP')"
+ *                 example: "INTP"
+ *               is_smoking:
+ *                 type: boolean
+ *                 description: "흡연 여부 (true: 흡연, false: 비흡연)"
+ *                 example: true
+ *               is_drinking:
+ *                 type: integer
+ *                 description: "음주 여부 (true: 음주, false: 비음주)"
+ *                 example: 2
+ *               instagram_id:
+ *                 type: string
+ *                 description: "사용자의 인스타그램 아이디"
+ *                 example: "wwnnss08"
+ *     responses:
+ *       200:
+ *         description: "회원 정보 변경 성공"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "회원 정보가 변경이 완료되었습니다."
+ *       400:
+ *         description: "필수 입력값이 누락된 경우"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "필수 입력값이 누락되었습니다."
+ *                 missingFields:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example: ["MBTI", "instagram_id"]
+ *       401:
+ *         description: "인증 실패 (토큰 없음 또는 로그인되지 않음)"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "로그인 되어있지 않습니다."
+ *       500:
+ *         description: "서버 오류"
  *         content:
  *           application/json:
  *             schema:

@@ -1,7 +1,7 @@
 import e from "express";
 import { generateCode, sendEmail } from "../../security/mail/mail.sender";
-import { mailVerifyModel, sendMailModel, userLogOutModel, userSignOutModel, userSignupModel } from "../user.model/user.model";
-import { UserDto } from "../user.dto/user.dto";
+import { changeUserInfoModel, mailVerifyModel, sendMailModel, userLogOutModel, userSignOutModel, userSignupModel } from "../user.model/user.model";
+import { userChangeInfoDTO, UserDto } from "../user.dto/user.dto";
 
 
 export const sendMailCodeService = async (
@@ -48,3 +48,10 @@ export const userSignOutService = async (
 ): Promise<void> => {
     const result = await userSignOutModel(user_id);
 }
+
+export const changeUserInfoService = async (
+    user_id : number,
+    userInfo : userChangeInfoDTO
+): Promise<void> => {
+    await changeUserInfoModel(user_id, userInfo);
+};

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { emailValidation, gmailValidation } from '../../security/validation/validation';
-import { mailVerifyService, sendMailCodeService, userLogOutService, userSignOutService, userSignupService } from '../user.service/user.service';
-import { UserDto } from '../user.dto/user.dto';
+import { changeUserInfoService, mailVerifyService, sendMailCodeService, userLogOutService, userSignOutService, userSignupService } from '../user.service/user.service';
+import { userChangeInfoDTO, UserDto } from '../user.dto/user.dto';
 import { decodeTokenUserId } from '../../security/JWT/auth.jwt';
 import { check_token, come_back_user } from '../../middlware/softDelete';
 
@@ -22,6 +22,9 @@ export const sendMailCodeController = async (
         // 이미 가입된 경우 예외처리 (토큰이 만료됬을 경우 즉 이메일 재 전송 요함) || 신규 회원도 메일 전송
         const result = await sendMailCodeService(mail);
 
+        if(result === 0) {
+            return res.status(200).json({ message: '기존 회원 복구 및 로그인 되었습니다.' });
+        }
 
         return res.status(200).json({  userId : result, message: '메일 전송 완료' });
     } catch (error : any) {
@@ -73,16 +76,12 @@ export const userSignupController = async (
     try {
         const info: UserDto = req.body;
         const token = req.headers.authorization?.split(' ')[1];
-        
-        console.log("들어옴");
-
+    
         const user_id = decodeTokenUserId(token) as number;
 
         if(user_id === null) {
             return res.status(403).json({ message: '토큰이 유효하지 않습니다.' });
         }
-
-        console.log("User ID : ", user_id);
 
         // 필수 값 검증
         const missingFields: string[] = [];
@@ -163,7 +162,6 @@ export const userSignOutController = async(
 
         const check = await check_token(user_id);
         
-        console.log('check:', check);
 
         if(check === false) {
             return res.status(401).json({ message: '로그인 되어있지 않습니다.' });
@@ -200,5 +198,53 @@ export const userWhoCameBackController = async (
     }catch(error: any) {
         console.error(error);
         next(error);
+    }
+};
+
+
+
+export const changeUserInfoController = async (
+    req : Request,
+    res : Response,
+    next : NextFunction
+):Promise<any> => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+        const user_id = decodeTokenUserId(token) as number;
+        const userInfo : userChangeInfoDTO = req.body;
+
+        if(!token) {
+            return res.status(401).json({ message: '토큰이 없습니다.' });
+        }
+
+        const check = await check_token(user_id);
+        
+        if(check === false) {
+            return res.status(401).json({ message: '로그인 되어있지 않습니다.' });
+        } else if(check === true) {
+
+            const missingFields: string[] = [];
+
+            if (!userInfo.MBTI) missingFields.push("MBTI");
+            if (userInfo.is_smoking === undefined) missingFields.push("is_smoking");
+            if (userInfo.is_drinking === undefined) missingFields.push("is_drinking");
+            if (!userInfo.instagram_id) missingFields.push("instagram_id");
+
+            // 누락된 필드가 있으면 400 응답
+            if (missingFields.length > 0) {
+                return res.status(400).json({
+                    message: "필수 입력값이 누락되었습니다.",
+                    missingFields
+                });
+            }
+
+
+            await changeUserInfoService(user_id, userInfo);
+            return res.status(200).json({ message: '회원 정보가 변경이 완료되었습니다.' });
+        }
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: '서버 오류가 발생했습니다.' });
     }
 };
