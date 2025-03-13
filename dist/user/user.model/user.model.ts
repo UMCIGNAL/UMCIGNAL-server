@@ -1,7 +1,9 @@
 import { getPool } from "../../config/database/mysqlConnect";
 import { ResultSetHeader } from "mysql2";
 import { generateToken } from "../../security/JWT/secure.jwt";
-import { UserDto } from "../user.dto/user.dto";
+import { userChangeInfoDTO, UserDto } from "../user.dto/user.dto";
+import { generateReferralCode } from "../../middlware/referralMiddleware";
+import { checkUser } from "../../middlware/softDelete";
 
 export const sendMailModel = async (
     email: string,
@@ -11,21 +13,23 @@ export const sendMailModel = async (
 
     const student_id = email.split('@')[0]; // 앞에 자리 파싱
 
-    // 이미 가입된 학생인지 확인 (학번으로 check)
-    const check_student_id = 
-    `SELECT * FROM User WHERE student_id = ?`;
+    // 이미 가입된 학생인지 확인 (학번으로 check) // 미들웨어에서 처리하게 만들어
+    const check_user = await checkUser(student_id);
 
-    const [checkResult]:any = await pool.query(check_student_id, [student_id]);
+    console.log('check_user:', check_user);
 
-    // 이미 존재하는 User의 경우
-    if(checkResult.length > 0) {
+    // 이미 존재하는 User의 경우 -> 로그아웃 또는 회원탈퇴한 유저 대상
+    if(check_user === true) {
         // 인증 비번만 변경
         const update_validation_code =
-        `UPDATE User SET valid_key = ? WHERE student_id = ?`;
+        `UPDATE User
+         SET valid_key = ?,
+         deleted_at = ?
+         WHERE student_id = ?`;
 
-        const change_validation_code = await pool.query(update_validation_code, [verficationCode, student_id]);
+        const change_validation_code = await pool.query(update_validation_code, [verficationCode, null, student_id]);
 
-        return checkResult[0].user_id;
+        return 0;
     }
 
     // 이메일 전송 후 DB에 저장
@@ -79,6 +83,8 @@ export const userSignupModel = async (
 ): Promise<UserDto> => {
     const pool = await getPool();
 
+    const referral_code = await generateReferralCode(user_id);
+
     const query = `
         UPDATE User 
         SET gender = ?, 
@@ -87,7 +93,8 @@ export const userSignupModel = async (
             is_smoking = ?, 
             is_drinking = ?, 
             instagram_id = ?, 
-            updated_at = ? 
+            updated_at = ?,
+            referralCode = ?
         WHERE user_id = ?
     `;
 
@@ -99,6 +106,7 @@ export const userSignupModel = async (
         info.is_drinking,
         info.instagram_id,
         new Date(),
+        referral_code,
         user_id
     ]);
 
@@ -143,7 +151,33 @@ export const userSignOutModel = async (
         WHERE user_id = ?
     `;
 
-    
-    const result = await pool.query(query, [fiveDaysLater, 'notExsistToken', user_id]);
-    console.log("sql check", result);
+    await pool.query(query, [fiveDaysLater, 'notExsistToken', user_id]);
+};
+
+
+
+export const changeUserInfoModel = async (
+    user_id : number,
+    userInfo : userChangeInfoDTO
+):Promise<void> => {
+    const pool = await getPool();
+
+    const query = `
+        UPDATE User
+        SET MBTI = ?,
+            is_smoking = ?,
+            is_drinking = ?,
+            instagram_id = ?,
+            updated_at = ?
+        WHERE user_id = ?
+        `;
+
+    const [result]:any = await pool.query(query, [
+        userInfo.MBTI,
+        userInfo.is_smoking,
+        userInfo.is_drinking,
+        userInfo.instagram_id,
+        new Date(),
+        user_id
+    ]);
 };

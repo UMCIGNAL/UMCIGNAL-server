@@ -6,6 +6,7 @@ import { swaggerSpec, swaggerUi } from './config/swagger';
 import { errorHandler } from './middlware/errorHandler/error.middleware';
 
 import userRouter from './user/user.router';
+import referralRouter from './referralCode/referral.router';
 
 const app = express();
 const router = express.Router();
@@ -25,6 +26,7 @@ router.get('/', (req, res) => {
 
 app.use('/', router);
 app.use('/user', userRouter);
+app.use('/referral', referralRouter);
 
 app.use(errorHandler);
 

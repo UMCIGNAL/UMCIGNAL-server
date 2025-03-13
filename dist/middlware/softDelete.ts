@@ -1,5 +1,25 @@
 import { getPool } from "../config/database/mysqlConnect";
 
+// 이미 존재하는 회원인지 체크하는 함수
+export const checkUser = async (
+    student_id : string
+):Promise<boolean> => {
+    const pool = await getPool();
+
+    const check_student_id = 
+    `SELECT * FROM User WHERE student_id = ?`;
+
+    const [checkResult]:any = await pool.query(check_student_id, [student_id]);
+
+    // 이미 존재하는 회원
+    if(checkResult.length > 0) {
+        return true;
+    }
+
+    return false;
+};
+
+
 
 // 회원탈퇴를 위한 함수
 export const softDelete = async (
