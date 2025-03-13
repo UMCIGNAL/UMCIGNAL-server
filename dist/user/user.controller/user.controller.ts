@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { emailValidation, gmailValidation } from '../../security/validation/validation';
-import { mailVerifyService, sendMailCodeService, userSignupService } from '../user.service/user.service';
+import { mailVerifyService, sendMailCodeService, userLogOutService, userSignOutService, userSignupService } from '../user.service/user.service';
 import { UserDto } from '../user.dto/user.dto';
 import { decodeTokenUserId } from '../../security/JWT/auth.jwt';
+import { check_token, come_back_user } from '../../middlware/softDelete';
 
 
 export const sendMailCodeController = async (
@@ -112,5 +113,92 @@ export const userSignupController = async (
     } catch (error: any) {
         console.error(error);
         next(error);  // Express 에러 핸들러로 전달
+    }
+};
+
+
+export const userLogOutController = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<any> => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+
+        if(!token) {
+            return res.status(401).json({ message: '토큰이 없습니다.' });
+        }
+
+        const user_id = decodeTokenUserId(token) as number;
+
+        const check = await check_token(user_id);
+
+        console.log('check:', check);
+
+        if(check === false) {
+            return res.status(401).json({ message: '로그인 되어있지 않습니다.' });
+        } else if(check === true) {
+            await userLogOutService(token);
+            return res.status(200).json({ message: '로그아웃 성공' });
+        }
+    }catch(error: any) {
+        console.error(error);
+        next(error);
+    }
+};
+
+
+export const userSignOutController = async(
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<any> => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+        const user_id = decodeTokenUserId(token) as number;
+
+        if(!token) {
+            return res.status(401).json({ message: '토큰이 없습니다.' });
+        }
+
+        const check = await check_token(user_id);
+        
+        console.log('check:', check);
+
+        if(check === false) {
+            return res.status(401).json({ message: '로그인 되어있지 않습니다.' });
+        } else if(check === true) {
+            await userSignOutService(user_id);
+            return res.status(200).json({ message: '회원탈퇴 성공 5일 뒤에 데이터가 삭제됩니다.' });
+        }
+    }catch(error: any) {
+        console.error(error);
+        next(error);
+    }
+};
+
+
+export const userWhoCameBackController = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<any> => {
+    try {
+        const email = req.body.email as string;
+
+        const student_id = email.split('@')[0];
+
+        const check = await come_back_user(student_id);
+
+        if(check) {
+            const result = await sendMailCodeService(email);
+            return res.status(200).json({ userId: result, message: '메일 전송 완료' }); // 다시 검증 라우터로 이동
+        } else {
+            return res.status(400).json({ message: '탈퇴한 회원이 아닙니다.' });
+        }
+
+    }catch(error: any) {
+        console.error(error);
+        next(error);
     }
 };

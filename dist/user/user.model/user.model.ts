@@ -46,18 +46,31 @@ export const mailVerifyModel = async (
 ): Promise<string | null> => {
     const pool = await getPool();
 
-    const query = 
-    `SELECT * FROM User WHERE valid_key = ?`;
+    const query = `SELECT * FROM User WHERE valid_key = ?`;
 
-    const [result]:any = await pool.query(query, [mailVerification]);
+    const [result]: any = await pool.query(query, [mailVerification]);
 
     if (result.length === 0) {
         return null; // 유효한 인증 코드가 없는 경우
     }
 
-    const token = generateToken(result[0]); // JWT 토큰 생성
+    const token = await generateToken(result[0]); // JWT 토큰 생성
+
+    if (!token) {
+        console.error('Token generation failed');
+        return null;
+    }
+
+    console.log('Token generated:', token);
+
+    const updateQuery = `UPDATE User SET Token = ? WHERE user_id = ?`;
+
+    // 토큰 값과 user_id가 정확하게 들어왔는지 확인
+    await pool.query(updateQuery, [token, result[0].user_id]);
+
     return token;
 };
+
 
 
 export const userSignupModel = async (
@@ -97,4 +110,40 @@ export const userSignupModel = async (
     const user = result[0] as UserDto;
     
     return user;
+};
+
+
+export const userLogOutModel = async (
+    token : string
+): Promise<void> => {
+    const pool = await getPool();
+
+    const query = `
+        UPDATE User 
+        SET token = null
+        WHERE token = ?
+    `;
+
+    await pool.query(query, [token]);
+};
+
+
+export const userSignOutModel = async (
+    user_id : number
+): Promise<void> => {
+    const pool = await getPool();
+
+    // 현재 날짜에서 5일 후의 날짜 계산
+    const fiveDaysLater = new Date();
+    fiveDaysLater.setDate(fiveDaysLater.getDate() + 5);
+
+    const query = `
+        UPDATE User 
+        SET deleted_at = ?, Token = ?
+        WHERE user_id = ?
+    `;
+
+    
+    const result = await pool.query(query, [fiveDaysLater, 'notExsistToken', user_id]);
+    console.log("sql check", result);
 };

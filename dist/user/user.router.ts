@@ -1,5 +1,5 @@
 import express from 'express';
-import { mailVerifyController, sendMailCodeController, userSignupController } from './user.controller/user.controller';
+import { mailVerifyController, sendMailCodeController, userLogOutController, userSignOutController, userSignupController, userWhoCameBackController } from './user.controller/user.controller';
 import { authenticateToken } from '../security/JWT/auth.jwt';
 
 const router = express.Router();
@@ -8,9 +8,13 @@ router.get('/', (req, res) => {
     res.json({ message: 'user router' });
 });
 
-router.post('/mailCode', sendMailCodeController);
-router.post('/verify', mailVerifyController);
+router.post('/mailCode', sendMailCodeController); // 처음 로그인 시 사용 또는 다시 로그인 시도 시 사용
+router.post('/verify', mailVerifyController);   // 인증 코드 검증 및 토큰 발급
 router.patch('/signup', authenticateToken, userSignupController); // 이미 가입한 회원 처리 끝
+
+router.patch('/logOut', authenticateToken, userLogOutController); // 로그아웃 처리
+router.patch('/signOut', authenticateToken, userSignOutController); // 회원탈퇴 처리
+// router.patch('/comebackUser', userWhoCameBackController); // 탈퇴한 회원 복구 처리 -> 필요 없음 기존 /mailCode 사용 가능
 
 /**
  * @swagger
@@ -180,6 +184,103 @@ router.patch('/signup', authenticateToken, userSignupController); // 이미 가�
  *         description: 서버 오류
  */
 
+/**
+ * @swagger
+ * /user/logOut:
+ *   patch:
+ *     summary: 사용자 로그아웃
+ *     description: 사용자가 로그아웃을 하면, 서버에서 인증 토큰을 삭제하고 로그아웃 처리를 합니다.
+ *     tags:
+ *       - User
+ *     security:
+ *       - BearerAuth: [] 
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *     responses:
+ *       200:
+ *         description: 로그아웃 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "로그아웃 성공"
+ *       401:
+ *         description: 인증되지 않은 사용자 (유효하지 않거나 존재하지 않는 토큰)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "로그인 되어있지 않습니다."
+ *       500:
+ *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "서버 오류가 발생했습니다."
+ */
 
+
+/**
+ * @swagger
+ * /user/signOut:
+ *   patch:
+ *     summary: 사용자 회원탈퇴
+ *     description: 사용자가 회원탈퇴 요청을 하면, 해당 사용자의 데이터를 5일 뒤에 삭제합니다.
+ *     tags:
+ *       - User
+ *     security:
+ *       - BearerAuth: [] 
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *     responses:
+ *       200:
+ *         description: 회원탈퇴 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "회원탈퇴 성공 5일 뒤에 데이터가 삭제됩니다."
+ *       401:
+ *         description: 인증되지 않은 사용자 (유효하지 않거나 존재하지 않는 토큰)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "로그인 되어있지 않습니다."
+ *       500:
+ *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "서버 오류가 발생했습니다."
+ */
 
 export default router;
