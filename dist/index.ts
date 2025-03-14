@@ -7,6 +7,7 @@ import { errorHandler } from './middlware/errorHandler/error.middleware';
 
 import userRouter from './user/user.router';
 import referralRouter from './referralCode/referral.router';
+import searchRouter from './search/search.router';
 
 const app = express();
 const router = express.Router();
@@ -27,6 +28,7 @@ router.get('/', (req, res) => {
 app.use('/', router);
 app.use('/user', userRouter);
 app.use('/referral', referralRouter);
+app.use('/search', searchRouter);
 
 app.use(errorHandler);
 
