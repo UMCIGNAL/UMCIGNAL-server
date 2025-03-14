@@ -92,6 +92,7 @@ export const userSignupController = async (
         if (info.is_smoking === undefined) missingFields.push("is_smoking");
         if (info.is_drinking === undefined) missingFields.push("is_drinking");
         if (!info.instagram_id) missingFields.push("instagram_id");
+        if (!info.age) missingFields.push("age");
 
         // 누락된 필드가 있으면 400 응답
         if (missingFields.length > 0) {
