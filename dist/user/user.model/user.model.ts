@@ -93,6 +93,7 @@ export const userSignupModel = async (
             is_smoking = ?, 
             is_drinking = ?, 
             instagram_id = ?, 
+            age = ?,
             updated_at = ?,
             referralCode = ?
         WHERE user_id = ?
@@ -105,6 +106,7 @@ export const userSignupModel = async (
         info.is_smoking,
         info.is_drinking,
         info.instagram_id,
+        info.age,
         new Date(),
         referral_code,
         user_id

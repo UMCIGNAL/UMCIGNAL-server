@@ -7,6 +7,7 @@ export interface UserDto {
     instagram_id : string;
     creadted_at: Date;
     updated_at: Date;
+    age : number;
 }
 
 

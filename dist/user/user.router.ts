@@ -153,6 +153,9 @@ router.patch('/changeInfo', authenticateToken, changeUserInfoController); // 회
  *               instagram_id:
  *                 type: string
  *                 example: "wwnnss06"
+ *               age :
+ *                 type: number
+ *                 example: 24
  *     responses:
  *       201:
  *         description: 회원가입 성공
