@@ -49,8 +49,8 @@ jobs:
       - name: Get package-lock.json hash
         id: package-lock-hash
         run: |
-          if ssh playground-umc-7th "test -f /home/ubuntu/travel_box_backend/package-lock.json"; then
-            REMOTE_HASH=$(ssh playground-umc-7th "md5sum /home/ubuntu/travel_box_backend/package-lock.json | cut -d' ' -f1")
+          if ssh playground-umc-7th "test -f /home/ubuntu/UMCIGNAL-server/package-lock.json"; then
+            REMOTE_HASH=$(ssh playground-umc-7th "md5sum /home/ubuntu/UMCIGNAL-server/package-lock.json | cut -d' ' -f1")
             LOCAL_HASH=$(md5sum package-lock.json | cut -d' ' -f1)
             if [ "$REMOTE_HASH" != "$LOCAL_HASH" ]; then
               echo "::set-output name=changed::true"
@@ -63,10 +63,10 @@ jobs:
 
       - name: Sync Changed Files
         run: |
-          ssh playground-umc-7th 'mkdir -p /home/ubuntu/travel_box_backend'
+          ssh playground-umc-7th 'mkdir -p /home/ubuntu/UMCIGNAL-server'
           git diff --name-only HEAD^1 HEAD | while read file; do
             if [ -f "$file" ]; then
-              rsync -avz --relative "$file" playground-umc-7th:/home/ubuntu/travel_box_backend/
+              rsync -avz --relative "$file" playground-umc-7th:/home/ubuntu/UMCIGNAL-server/
             fi
           done
 
@@ -74,13 +74,13 @@ jobs:
         if: steps.check-package.outputs.changed != '' || steps.package-lock-hash.outputs.changed == 'true'
         run: |
           ssh playground-umc-7th '
-            cd /home/ubuntu/travel_box_backend
+            cd /home/ubuntu/UMCIGNAL-server
             npm install
           '
 
       - name: Create or Update .env file
         run: |
-            ssh playground-umc-7th 'cat > /home/ubuntu/travel_box_backend/.env << EOF
+            ssh playground-umc-7th 'cat > /home/ubuntu/UMCIGNAL-server/.env << EOF
             DATABASE_HOST=${{ secrets.DATABASE_HOST }}
             DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}
             DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}
@@ -102,7 +102,7 @@ jobs:
       - name: Restart Application
         run: |
           ssh playground-umc-7th '
-            cd /home/ubuntu/travel_box_backend
+            cd /home/ubuntu/UMCIGNAL-server
             if pgrep node; then
               pkill node
               sleep 5
