@@ -11,3 +11,5 @@ export const pool = mysql.createPool({
   database: process.env.DATABASE_NAME, // 데이터베이스 이름
   port: Number(process.env.DATABASE_PORT), // 로컬 포워딩 포트
 });
+
+export const getPool = () => pool;
