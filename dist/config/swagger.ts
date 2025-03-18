@@ -1,13 +1,31 @@
-import mysql from 'mysql2/promise';
-import dotenv from 'dotenv';
+import swaggerUi from 'swagger-ui-express';
+import swaggerJsDoc from 'swagger-jsdoc';
 
-dotenv.config();
+const options: swaggerJsDoc.Options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'API Documentation',
+      version: '1.0.0',
+      description: 'API documentation for travel box application',
+    },
+    components: {
+      securitySchemes: {
+        BearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [
+      {
+        BearerAuth: [],
+      },
+    ],
+  },
+  apis: ['./dist/**/*.ts'], // 라우트 파일의 주석에서 Swagger 스키마를 가져옵니다.
+};
 
-// eslint-disable-next-line import/prefer-default-export
-export const pool = mysql.createPool({
-  host: process.env.DATABASE_HOST, // SSH 터널을 통해 로컬로 리디렉션되므로 localhost 사용
-  user: process.env.DATABASE_USERNAME, // 데이터베이스 사용자 이름
-  password: process.env.DATABASE_PASSWORD, // 데이터베이스 비밀번호
-  database: process.env.DATABASE_NAME, // 데이터베이스 이름
-  port: Number(process.env.DATABASE_PORT), // 로컬 포워딩 포트
-});
+export const swaggerSpec = swaggerJsDoc(options);
+export { swaggerUi };
