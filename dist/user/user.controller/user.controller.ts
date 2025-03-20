@@ -87,6 +87,7 @@ export const userSignupController = async (
         const missingFields: string[] = [];
 
         if (!info.gender) missingFields.push("gender");
+        if (!info.age) missingFields.push("age");
         if (!info.student_major) missingFields.push("student_major");
         if (!info.MBTI) missingFields.push("MBTI");
         if (info.is_smoking === undefined) missingFields.push("is_smoking");

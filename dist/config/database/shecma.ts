@@ -66,3 +66,28 @@ export const majors: Major[] = [
     { major_name: '생활예술전공' },
     { major_name: '음악학부' }
 ];
+
+
+
+interface College {
+    id: number;
+    name: '경영경제대학' | '인문사회과학대학' | '사범대학' | '문화예술대학' | '융합공과대학';
+}
+
+interface Department {
+    id: number;
+    collegeId: number;
+    name: string;
+}
+
+const colleges: College[] = [
+    { id: 1, name: '경영경제대학' },
+    { id: 2, name: '인문사회과학대학' },
+];
+
+const departments: Department[] = [
+    { id: 1, collegeId: 1, name: '경제금융학부' },
+    { id: 2, collegeId: 1, name: '경영학부' },
+    { id: 3, collegeId: 1, name: '글로벌경영학과' },
+    { id: 4, collegeId: 1, name: '융합경영학과' },
+];
