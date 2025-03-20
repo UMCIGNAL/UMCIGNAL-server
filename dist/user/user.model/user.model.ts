@@ -4,6 +4,7 @@ import { generateToken } from "../../security/JWT/secure.jwt";
 import { userChangeInfoDTO, UserDto } from "../user.dto/user.dto";
 import { generateReferralCode } from "../../middlware/referralMiddleware";
 import { checkUser } from "../../middlware/softDelete";
+import { convertAge } from "../../middlware/user.middleware";
 
 export const sendMailModel = async (
     email: string,
@@ -99,6 +100,9 @@ export const userSignupModel = async (
         WHERE user_id = ?
     `;
 
+    // 날짜를 나이로 변환하는 함수
+    const convert_age = await convertAge(info.age);
+
     const [insertResult] = await pool.query<ResultSetHeader>(query, [
         info.gender,
         info.student_major,
@@ -106,7 +110,7 @@ export const userSignupModel = async (
         info.is_smoking,
         info.is_drinking,
         info.instagram_id,
-        info.age,
+        convert_age,
         new Date(),
         referral_code,
         user_id
