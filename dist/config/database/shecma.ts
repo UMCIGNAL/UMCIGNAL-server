@@ -3,27 +3,29 @@ type DrinkingStatus = '0' | '1' | '2';
 
 export interface User {
     user_id: number;
-    gender?: Gender | null; // Allowing null or undefined
-    student_id?: string; // Allowing undefined or null
-    student_major?: string; // Allowing undefined or null
-    MBTI?: string; // Allowing undefined or null
-    is_smoking?: boolean | null; // Allowing undefined or null
-    is_drinking?: DrinkingStatus | null; // Allowing undefined or null
-    instagram_id?: string; // Allowing undefined or null
-    created_at?: Date; // Allowing undefined or null
-    updated_at?: Date; // Allowing undefined or null
-    deleted_at?: Date | null; // Allowing undefined or null
-    valid_key?: string | null; // Allowing undefined or null
-    reroll?: number | null; // Allowing undefined or null
+    student_id: string; 
+    instagram_id: string; // 인스타 그램 아이디
+    gender: Gender | null; // 성별
+    student_major: string | null; // 학과
+    MBTI: string | null; 
+    age: number | null; // 년도 날짜를 받으면 나이로 반환 할 것
+    is_smoking: boolean | null; // 흡연 여부
+    is_drinking: DrinkingStatus | null; // 음수 횟수
+    updated_at: Date | null; // 정보 수정 일자
+    deleted_at: Date | null; // 삭제 예정 일자
+    valid_key: string | null; // 인증키
+    reroll: number; // default 5
+    created_at: Date; // 생성 일자
+    instagram_reject: number; // default 0
 }
 
 export interface IdleType {
     user_id: number;
-    MBTI?: string | null; // Allowing undefined or null
+    MBTI: string | null; // Allowing undefined or null
     age_gap: string;
     major_idle: string;
-    is_smoking_idle?: boolean | null; // Allowing undefined or null
-    is_drinking_idle?: string | null; // Allowing undefined or null
+    is_smoking_idle: boolean; 
+    is_drinking_idle: string; 
 }
 
 export interface Major {

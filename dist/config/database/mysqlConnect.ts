@@ -8,6 +8,7 @@ dotenv.config();
 
 const sshClient = new Client();
 let pool: mysql.Pool;
+const DB_HOST = process.env.DATABASE_HOST;
 
 const createSshTunnel = () => {
   return new Promise<mysql.Pool>((resolve, reject) => {
@@ -21,7 +22,7 @@ const createSshTunnel = () => {
           if (err) reject(err);
           
           const newPool = mysql.createPool({
-            host: '127.0.0.1',
+            host: DB_HOST,
             port: 3306, // 로컬 포트 포워딩
             user: process.env.DATABASE_USERNAME,
             password: process.env.DATABASE_PASSWORD,
