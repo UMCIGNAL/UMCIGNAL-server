@@ -134,7 +134,7 @@ router.patch('/changeInfo', authenticateToken, changeUserInfoController); // 회
  *             properties:
  *               gender:
  *                 type: string
- *                 example: "Male"
+ *                 example: "male"
  *               name:       
  *                 type: string  
  *                 example: "고명준"   
@@ -155,7 +155,10 @@ router.patch('/changeInfo', authenticateToken, changeUserInfoController); // 회
  *                 example: "wwnnss06"
  *               age :
  *                 type: number
- *                 example: 24
+ *                 example: 2001-06-01
+ *               nickname:
+ *                type: string
+ *                example: "준"
  *     responses:
  *       201:
  *         description: 회원가입 성공
@@ -329,6 +332,9 @@ router.patch('/changeInfo', authenticateToken, changeUserInfoController); // 회
  *                 type: string
  *                 description: "사용자의 인스타그램 아이디"
  *                 example: "wwnnss08"
+ *               nickname:
+ *                 type: string
+ *                 example: "Jun"
  *     responses:
  *       200:
  *         description: "회원 정보 변경 성공"

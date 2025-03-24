@@ -23,7 +23,7 @@ export const sendMailModel = async (
     if(check_user === true) {
         // 인증 비번만 변경
         const update_validation_code =
-        `UPDATE User
+        `UPDATE user
          SET valid_key = ?,
          deleted_at = ?
          WHERE student_id = ?`;
@@ -35,7 +35,7 @@ export const sendMailModel = async (
 
     // 이메일 전송 후 DB에 저장
     const query = 
-    `INSERT INTO User (student_id, valid_key, created_at) VALUES (?, ?, ?)`;
+    `INSERT INTO user (student_id, valid_key, created_at) VALUES (?, ?, ?)`;
 
 
     // 인증 코드와 학번을 DB에 저장
@@ -51,7 +51,7 @@ export const mailVerifyModel = async (
 ): Promise<string | null> => {
     const pool = await getPool();
 
-    const query = `SELECT * FROM User WHERE valid_key = ?`;
+    const query = `SELECT * FROM user WHERE valid_key = ?`;
 
     const [result]: any = await pool.query(query, [mailVerification]);
 
@@ -68,7 +68,7 @@ export const mailVerifyModel = async (
 
     console.log('Token generated:', token);
 
-    const updateQuery = `UPDATE User SET Token = ? WHERE user_id = ?`;
+    const updateQuery = `UPDATE user SET Token = ? WHERE user_id = ?`;
 
     // 토큰 값과 user_id가 정확하게 들어왔는지 확인
     await pool.query(updateQuery, [token, result[0].user_id]);
@@ -87,7 +87,7 @@ export const userSignupModel = async (
     const referral_code = await generateReferralCode(user_id);
 
     const query = `
-        UPDATE User 
+        UPDATE user 
         SET gender = ?, 
             student_major = ?, 
             MBTI = ?, 
@@ -96,7 +96,8 @@ export const userSignupModel = async (
             instagram_id = ?, 
             age = ?,
             updated_at = ?,
-            referralCode = ?
+            referralCode = ?,
+            nickName = ?
         WHERE user_id = ?
     `;
 
@@ -113,11 +114,12 @@ export const userSignupModel = async (
         convert_age,
         new Date(),
         referral_code,
+        info.nickname,
         user_id
     ]);
 
     const updatedQuery = 
-    `SELECT * FROM User WHERE user_id = ?`;
+    `SELECT * FROM user WHERE user_id = ?`;
 
     const [result]:[any[], any] = await pool.query(updatedQuery, [user_id]);
 
@@ -133,7 +135,7 @@ export const userLogOutModel = async (
     const pool = await getPool();
 
     const query = `
-        UPDATE User 
+        UPDATE user 
         SET token = null
         WHERE token = ?
     `;
@@ -152,7 +154,7 @@ export const userSignOutModel = async (
     fiveDaysLater.setDate(fiveDaysLater.getDate() + 5);
 
     const query = `
-        UPDATE User 
+        UPDATE user 
         SET deleted_at = ?, Token = ?
         WHERE user_id = ?
     `;
@@ -169,12 +171,13 @@ export const changeUserInfoModel = async (
     const pool = await getPool();
 
     const query = `
-        UPDATE User
+        UPDATE user
         SET MBTI = ?,
             is_smoking = ?,
             is_drinking = ?,
             instagram_id = ?,
-            updated_at = ?
+            updated_at = ?,
+            nickName = ?
         WHERE user_id = ?
         `;
 
@@ -184,6 +187,7 @@ export const changeUserInfoModel = async (
         userInfo.is_drinking,
         userInfo.instagram_id,
         new Date(),
+        userInfo.nickname,
         user_id
     ]);
 };
