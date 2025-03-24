@@ -25,11 +25,11 @@ export const checkRefferalCode = async(
 
     // 내 추천 코드 확인
     const check_my_referralCode = 
-    `SELECT referralCode FROM User WHERE user_id = ?;`; // 내 referralCode 반환
+    `SELECT referralCode FROM user WHERE user_id = ?;`; // 내 referralCode 반환
 
     // 친구 추천 코드 확인
     const check_friend_referralCode =
-    `SELECT user_id FROM User WHERE referralCode = ?;`; // 친구 user_id 반환
+    `SELECT user_id FROM user WHERE referralCode = ?;`; // 친구 user_id 반환
 
     const [checkMyReferralCode] : any = await pool.query(check_my_referralCode, [user_id]); // 내 referralCode 반환
     const [checkFriendReferralCode]: any = await pool.query(check_friend_referralCode, [referralCode]);   // 친구 user_id 반환    
@@ -58,17 +58,17 @@ export const increaseReferralCount = async(
 ):Promise<void> => {
     const pool = await getPool();
 
-    const index_query = `SELECT user_id FROM User WHERE referralCode = ?`;
+    const index_query = `SELECT user_id FROM user WHERE referralCode = ?`;
     const [index_check] : any = await pool.query(index_query, [referralCode]);
     const friend_id = index_check[0].user_id;
 
-    const query_increase_friend = `UPDATE User
+    const query_increase_friend = `UPDATE user
                                    SET reroll = reroll + 3 
                                    WHERE user_id = ?`;
 
     await pool.query(query_increase_friend, [friend_id]);
 
-    const query_increase_me = `UPDATE User
+    const query_increase_me = `UPDATE user
                                SET reroll = reroll + 2
                                WHERE user_id = ?`;
                                        
@@ -76,7 +76,7 @@ export const increaseReferralCount = async(
 
 
     const increase_referralIndex =
-    `UPDATE User
+    `UPDATE user
      SET referralIndex = referralIndex + 1
      WHERE user_id = ?;`;
 
@@ -91,7 +91,7 @@ export const referralIndexCheck = async(
 ): Promise<boolean> => {
     const pool = await getPool();
 
-    const query = `SELECT referralIndex FROM User WHERE user_id = ?;`;  
+    const query = `SELECT referralIndex FROM user WHERE user_id = ?;`;  
 
     const [result] : any = await pool.query(query, [user_id]);
 

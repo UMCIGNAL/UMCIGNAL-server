@@ -7,7 +7,7 @@ export const checkUser = async (
     const pool = await getPool();
 
     const check_student_id = 
-    `SELECT * FROM User WHERE student_id = ?`;
+    `SELECT * FROM user WHERE student_id = ?`;
 
     const [checkResult]:any = await pool.query(check_student_id, [student_id]);
 
@@ -30,7 +30,7 @@ export const softDelete = async (
     console.log('user_id:', user_id);
     
     const query = `
-        SELECT deleted_at FROM User WHERE user_id = ?
+        SELECT deleted_at FROM user WHERE user_id = ?
     `;
 
     const result = await pool.query(query, [user_id]);
@@ -67,7 +67,7 @@ export const check_token = async (
     const pool = await getPool();
 
     const query = `
-        SELECT Token FROM User WHERE user_id = ?;
+        SELECT Token FROM user WHERE user_id = ?;
     `;
 
     const [result]:any = await pool.query(query, [user_id]);
@@ -87,7 +87,7 @@ export const come_back_user = async (
     const pool = await getPool();
 
     const query = `
-        SELECT Token FROM User WHERE student_id = ?;
+        SELECT Token FROM user WHERE student_id = ?;
     `;
 
     const [rows] = await pool.query(query, [student_id]);

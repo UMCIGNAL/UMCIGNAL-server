@@ -8,6 +8,7 @@ export interface UserDto {
     creadted_at: Date;
     updated_at: Date;
     age : Date;//
+    nickname : string;
 }
 
 
@@ -17,4 +18,5 @@ export interface userChangeInfoDTO {
     is_drinking: number;
     instagram_id : string;
     updated_at: Date;
+    nickname : string;
 }

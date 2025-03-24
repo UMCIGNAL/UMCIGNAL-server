@@ -33,7 +33,7 @@ export const getMyRefferalModel = async(
     const pool = await getPool();
 
     const query = 
-    `SELECT referralCode FROM User WHERE user_id = ?`;
+    `SELECT referralCode FROM user WHERE user_id = ?`;
 
     const [result] : any = await pool.query(query, [user_id]);
 
