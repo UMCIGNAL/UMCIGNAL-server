@@ -87,12 +87,14 @@ export const userSignupController = async (
         const missingFields: string[] = [];
 
         if (!info.gender) missingFields.push("gender");
+        if (!info.age) missingFields.push("age");
         if (!info.student_major) missingFields.push("student_major");
         if (!info.MBTI) missingFields.push("MBTI");
         if (info.is_smoking === undefined) missingFields.push("is_smoking");
         if (info.is_drinking === undefined) missingFields.push("is_drinking");
         if (!info.instagram_id) missingFields.push("instagram_id");
         if (!info.age) missingFields.push("age");
+        if (!info.nickname) missingFields.push("nickname");
 
         // 누락된 필드가 있으면 400 응답
         if (missingFields.length > 0) {
@@ -230,6 +232,7 @@ export const changeUserInfoController = async (
             if (userInfo.is_smoking === undefined) missingFields.push("is_smoking");
             if (userInfo.is_drinking === undefined) missingFields.push("is_drinking");
             if (!userInfo.instagram_id) missingFields.push("instagram_id");
+            if (!userInfo.nickname) missingFields.push("nickname");
 
             // 누락된 필드가 있으면 400 응답
             if (missingFields.length > 0) {
