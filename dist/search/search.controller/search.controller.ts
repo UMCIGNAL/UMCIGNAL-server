@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { searchService } from "../search.service/search.service";
+import { searchService, specificMajorService } from "../search.service/search.service";
+import { majorDTO } from "../search.dto/search.dto";
 
 export const searchController = async (
     req : Request,
@@ -17,13 +18,22 @@ export const searchController = async (
 };
 
 export const specificMajorController = async (
-    req : Request,
-    res : Response,
-    next : NextFunction
-):Promise<void> => {
-    try {
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<any> => {
+    try {   
+        const major_id = Number(req.query.majorId);
 
-    } catch (error : any) {
+        if (!major_id) {
+            return res.status(400).json({ message: "전공 id를 입력해주세요." });
+        }
 
+        const result: majorDTO[] = await specificMajorService(major_id);
+
+        return res.status(200).json({ result });
+    } catch (error) {
+        console.error("Error in specificMajorController:", error);
+        return res.status(500).json({ message: "서버 에러입니다." });
     }
 };
