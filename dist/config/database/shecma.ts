@@ -31,15 +31,13 @@ const User = {
     token: null // 사용자 인증 토큰 추가
 };
 
-const IdleType = {
-    idleType: 0,
-    MBTI: '',
-    from_age: '',
-    to_age: '',
-    major_idle: '',
-    is_smoking_idle: false,
-    is_drinking_idle: ''
+const male_table = {
+    user_id: 0
 };
+
+const female_table = {
+    user_id: 0
+}
 
 const Colleges = [
     { id: 1, name: '인문사회과학대학' },

@@ -133,9 +133,11 @@ export const userLogOutController = async (
 
         const user_id = decodeTokenUserId(token) as number;
 
-        const check = await check_token(user_id);
+        if(user_id === null) {
+            return res.status(403).json({ message: '토큰이 유효하지 않습니다.' });
+        }
 
-        console.log('check:', check);
+        const check = await check_token(user_id);
 
         if(check === false) {
             return res.status(401).json({ message: '로그인 되어있지 않습니다.' });
@@ -161,6 +163,10 @@ export const userSignOutController = async(
 
         if(!token) {
             return res.status(401).json({ message: '토큰이 없습니다.' });
+        }
+
+        if(user_id === null) {
+            return res.status(403).json({ message: '토큰이 유효하지 않습니다.' });
         }
 
         const check = await check_token(user_id);
