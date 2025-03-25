@@ -1,16 +1,14 @@
 import { getPool } from "../../config/database/mysqlConnect";
 
 export const searchModel = async (
-    keyword : string
 ): Promise<string[]> => {
     const pool = await getPool();
 
     const query = 
-    `SELECT major_name
-     FROM major_table
-     WHERE major_name LIKE ?;`;
+    `SELECT *
+     FROM college;`;
 
-    const [rows] = await pool.execute(query, [`%${keyword}%`]);
+    const [rows] = await pool.execute(query);
 
-    return (rows as any[]).map((row: any) => row.major_name);
+    return (rows as any[]).map((row: any) => row);
 };

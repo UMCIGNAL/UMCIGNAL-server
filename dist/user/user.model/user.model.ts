@@ -4,7 +4,7 @@ import { generateToken } from "../../security/JWT/secure.jwt";
 import { userChangeInfoDTO, UserDto } from "../user.dto/user.dto";
 import { generateReferralCode } from "../../middlware/referralMiddleware";
 import { checkUser } from "../../middlware/softDelete";
-import { convertAge, femaleInfoAdd, findGender, genderRecovery, maleInfoAdd } from "../../middlware/user.middleware";
+import { convertAge } from "../../middlware/user.middleware";
 
 export const sendMailModel = async (
     email: string,
@@ -30,7 +30,6 @@ export const sendMailModel = async (
 
         await pool.query(update_validation_code, [verficationCode, null, student_id]);
 
-        await genderRecovery(student_id);
 
         return 0;
     }
