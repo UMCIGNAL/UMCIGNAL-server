@@ -2,6 +2,7 @@ import e from "express";
 import { generateCode, sendEmail } from "../../security/mail/mail.sender";
 import { changeUserInfoModel, mailVerifyModel, sendMailModel, userLogOutModel, userSignOutModel, userSignupModel } from "../user.model/user.model";
 import { userChangeInfoDTO, UserDto } from "../user.dto/user.dto";
+import { femaleInfoAdd, findGender, maleInfoAdd } from "../../middlware/user.middleware";
 
 
 export const sendMailCodeService = async (
@@ -33,6 +34,20 @@ export const userSignupService = async (
 ): Promise<UserDto> => {
     const result = await userSignupModel(info, user_id);
 
+    let check;
+
+    if(info.gender === 'male') {
+        console.log("male : ", info.gender);
+        check = await maleInfoAdd(user_id);
+    } else if(info.gender === 'female') {
+        console.log("female : ", info.gender);
+        check = await femaleInfoAdd(user_id);
+    }
+
+    if(check === 0) {
+        console.log("성별 정보 추가 실패");
+    }
+
     return result;
 };
 
@@ -47,6 +62,8 @@ export const userSignOutService = async (
     user_id : number 
 ): Promise<void> => {
     const result = await userSignOutModel(user_id);
+
+    const find_gender = await findGender(user_id);
 }
 
 export const changeUserInfoService = async (
