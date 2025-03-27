@@ -31,13 +31,34 @@ const User = {
     token: null // 사용자 인증 토큰 추가
 };
 
-const male_table = {
-    user_id: 0
-};
+// idleType 테이블 생성
+const createIdleTypeTable = `
+    CREATE TABLE IF NOT EXISTS idleType (
+        idleType_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        idle_MBTI VARCHAR(255) NULL DEFAULT NULL,
+        age_gap INT NULL DEFAULT NULL,
+        smoking_idle BOOLEAN NOT NULL DEFAULT FALSE,
+        drinking_idle INT NOT NULL DEFAULT 0,
+        FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+    );
+`;
 
-const female_table = {
-    user_id: 0
-}
+// idle_major 테이블 생성
+const createIdleMajorTable = `
+    CREATE TABLE IF NOT EXISTS idle_major (
+        major_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        idleType_id INT NOT NULL,
+        major_name ENUM(
+            '공간환경학부', '공공인재학부', '가족복지학과', '국가안보학과', '국어교육과', '교육학과', '영어교육과', '수학교육과',
+            '경제금융학부', '경영학부', '글로벌경영학과', '융합경영학과', '휴먼지능정보공학전공', '핀테크전공', '빅데이터융합전공',
+            '스마트생산전공', '애니메이션전공', '컴퓨터과학전공', '전기공학전공', '게임전공', '지능IOT융합전공', '한일문화콘텐츠전공',
+            '생명공학전공', '화학에너지공학전공', '화공신소재전공', '식품영양학전공', '의류학전공', '스포츠건강관리전공',
+            '무용예술전공', '조형예술전공', '생활예술전공', '음악학부'
+        ) NOT NULL,
+        FOREIGN KEY (idleType_id) REFERENCES idleType(idleType_id) ON DELETE CASCADE
+    );
+`;
 
 const Colleges = [
     { id: 1, name: '인문사회과학대학' },
