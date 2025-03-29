@@ -1,5 +1,5 @@
-import { addIdleType, fixIdleType } from "../idleType.dto/idleType.dto";
-import { addIdleTypeModel, fixIdleTypeModel } from "../idleType.model/idleType.model";
+import { addIdleType, fixIdleType, foundUser } from "../idleType.dto/idleType.dto";
+import { addIdleTypeModel, findIdleTypeModel, fixIdleTypeModel } from "../idleType.model/idleType.model";
 
 export const addIdleTypeService = async (
     user_id : number,
@@ -13,4 +13,11 @@ export const fixIdleTypeService = async(
     idleType : fixIdleType
 ):Promise<void> => {
     await fixIdleTypeModel(user_id, idleType);
+};
+
+export const findIdleTypeService = async(
+    user_id:number
+):Promise<{findUser : foundUser} | null> => {
+    const result = await findIdleTypeModel(user_id);
+    return result;
 };
