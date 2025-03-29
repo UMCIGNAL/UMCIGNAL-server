@@ -1,5 +1,7 @@
+import { RowDataPacket } from "mysql2";
 import { getPool } from "../../config/database/mysqlConnect";
-import { addIdleType, fixIdleType } from "../idleType.dto/idleType.dto";
+import { defineGender, findIdleUser, makeRandomIndex } from "../../middlware/idleType.middleware";
+import { addIdleType, fixIdleType, foundUser } from "../idleType.dto/idleType.dto";
 
 
 export const addIdleTypeModel = async (
@@ -151,5 +153,36 @@ export const fixIdleTypeModel = async (
         if (conn) {
             conn.release();
         }
+    }
+};
+
+
+export const findIdleTypeModel = async(
+    user_id: number
+): Promise<{ findUser: foundUser } | null> => {
+    const pool = await getPool();
+    const conn = await pool.getConnection();
+
+    try {
+        await conn.beginTransaction();
+
+        
+        const gender = await defineGender(user_id, conn);
+
+        const result = await findIdleUser(gender, user_id, conn);
+
+        if (!result) {
+            throw new Error("이상형 유저를 찾을 수 없습니다.");
+        }
+
+        await conn.commit();
+
+        return result;
+    } catch (error) {
+        console.error("Error in findIdleTypeModel:", error);
+        await conn.rollback();
+        return null;
+    } finally {
+        await conn.release();
     }
 };

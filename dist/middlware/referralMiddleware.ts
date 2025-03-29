@@ -81,7 +81,7 @@ export const increaseReferralCount = async(
      WHERE user_id = ?;`;
 
     await pool.query(increase_referralIndex, [user_id]);
-    await pool.query(increase_referralIndex, [friend_id]); // 만약에 추천인 코드 입력이 한번만 되야한다면 이 경우는 지울 수 있을 듯
+    // await pool.query(increase_referralIndex, [friend_id]); // 만약에 추천인 코드 입력이 한번만 되야한다면 이 경우는 지울 수 있을 듯
 };
 
 
