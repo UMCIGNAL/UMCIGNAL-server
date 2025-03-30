@@ -1,6 +1,6 @@
 import { RowDataPacket } from "mysql2";
 import { getPool } from "../../config/database/mysqlConnect";
-import { defineGender, findIdleUser, makeRandomIndex } from "../../middlware/idleType.middleware";
+import { defineGender, findIdleUser, makeRandomIndex, reroll } from "../../middlware/idleType.middleware";
 import { addIdleType, fixIdleType, foundUser } from "../idleType.dto/idleType.dto";
 
 
@@ -173,6 +173,38 @@ export const findIdleTypeModel = async(
 
         if (!result) {
             throw new Error("이상형 유저를 찾을 수 없습니다.");
+        }
+
+        await conn.commit();
+
+        return result;
+    } catch (error) {
+        console.error("Error in findIdleTypeModel:", error);
+        await conn.rollback();
+        return null;
+    } finally {
+        await conn.release();
+    }
+};
+
+export const rerollModel = async(
+    user_id: number
+):Promise<{findUser: foundUser} | number | null> => {
+    const pool = await getPool();
+    const conn = await pool.getConnection();
+
+    try {
+        await conn.beginTransaction();
+
+        
+        const gender = await defineGender(user_id, conn);
+
+        const result = await reroll(gender, user_id, conn);
+
+        if (!result) {
+            throw new Error("이상형 유저를 찾을 수 없습니다.");
+        } else if(result === 0) {
+            throw new Error("Reroll 횟수를 모두 소진하였습니다.");
         }
 
         await conn.commit();
