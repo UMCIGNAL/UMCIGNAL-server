@@ -1,5 +1,5 @@
 import Router from 'express';
-import { addIdleTypeController, findIdleTypeController, fixIdleTypeController } from './idleType.controller/idleType.controller';
+import { addIdleTypeController, findIdleTypeController, fixIdleTypeController, rerollController } from './idleType.controller/idleType.controller';
 import { authenticateToken } from '../security/JWT/auth.jwt';
 
 const router = Router();
@@ -11,6 +11,7 @@ router.get('/', (req, res) => {
 router.post('/addIdleType', authenticateToken, addIdleTypeController);
 router.patch('/fixIdleType', authenticateToken, fixIdleTypeController);
 router.get('/findIdleType', authenticateToken, findIdleTypeController);
+router.get('/reroll', authenticateToken, rerollController);
 
 /**
  * @swagger
@@ -189,5 +190,70 @@ router.get('/findIdleType', authenticateToken, findIdleTypeController);
  *                   example: "서버 에러입니다."
  */
 
+/**
+ * @swagger
+ * /idleType/reroll:
+ *   get:
+ *     summary: 이상형 ReRoll 기능
+ *     description: 사용자의 토큰을 검증하고, ReRoll 기능을 수행합니다.
+ *     tags:
+ *       - idleType
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: ReRoll 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 result:
+ *                   type: integer
+ *                   description: 남은 ReRoll 횟수
+ *                 message:
+ *                   type: string
+ *                   example: "이상형을 찾았습니다!"
+ *       401:
+ *         description: 인증되지 않음 (토큰 없음 또는 로그인 안 됨)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "토큰이 없습니다."
+ *       403:
+ *         description: 유효하지 않은 토큰
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "토큰이 유효하지 않습니다."
+ *       405:
+ *         description: ReRoll 횟수 초과
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "ReRoll 횟수를 모두 소진하셨습니다."
+ *       500:
+ *         description: 서버 에러
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "서버 에러입니다."
+ */
 
 export default router;

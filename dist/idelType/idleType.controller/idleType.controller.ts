@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { decodeTokenUserId } from "../../security/JWT/auth.jwt";
 import { check_token } from "../../middlware/softDelete";
 import { addIdleType, fixIdleType } from "../idleType.dto/idleType.dto";
-import { addIdleTypeService, findIdleTypeService, fixIdleTypeService } from "../idleType.service/idleType.service";
+import { addIdleTypeService, findIdleTypeService, fixIdleTypeService, rerollService } from "../idleType.service/idleType.service";
 
 export const addIdleTypeController = async (
     req : Request,
@@ -111,6 +111,48 @@ export const findIdleTypeController = async (
             return res.status(401).json({ message: '로그인 되어있지 않습니다.' });
         } else if(check === true) {            
             const result = await findIdleTypeService(user_id);
+
+            if(result === null) {
+                return res.status(404).json({ message: '이상형을 찾지 못 하였습니다.' });
+            }
+            return res.status(200).json({ result, message : '이상형을 찾았습니다!' });
+        }        
+    } catch(error) {
+        return res.status(500).json({ message : '서버 에러입니다.' });
+    }
+};
+
+export const rerollController = async (
+    req : Request,
+    res : Response,
+    next : NextFunction
+): Promise<any> => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+
+        if(!token) {
+            return res.status(401).json({ message: '토큰이 없습니다.' });
+        }
+        
+        const user_id = decodeTokenUserId(token) as number;
+        
+        if(user_id === null) {
+            return res.status(403).json({ message: '토큰이 유효하지 않습니다.' });
+        }
+
+        const check = await check_token(user_id);
+        
+        if(check === false) {
+            return res.status(401).json({ message: '로그인 되어있지 않습니다.' });
+        } else if(check === true) {            
+            const result = await rerollService(user_id);
+
+            if(result === 0) {
+                return res.status(405).json({ message: 'ReRoll 횟수를 모두 소진하셨습니다.' });
+            } else if(result === null) {
+                return res.status(404).json({ message: '이상형을 찾지 못 하였습니다.' });
+            }
+
             return res.status(200).json({ result, message : '이상형을 찾았습니다!' });
         }        
     } catch(error) {
