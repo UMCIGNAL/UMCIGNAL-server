@@ -1,4 +1,3 @@
-
 export const convertAge = async (
     date_of_birth : Date
 ):Promise<number> => {
@@ -15,4 +14,4 @@ export const convertAge = async (
     }
 
     return age;
-}
+};
