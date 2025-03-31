@@ -43,7 +43,6 @@ export const addIdleTypeController = async (
                 });
             }
             
-            
             await addIdleTypeService(user_id, idleType);
             return res.status(200).json({ message: '이상형 정보가 추가되었습니다.' });
         }
