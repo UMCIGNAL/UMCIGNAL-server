@@ -9,6 +9,7 @@ import userRouter from './user/user.router';
 import referralRouter from './referralCode/referral.router';
 import searchRouter from './search/search.router';
 import idleRouter from './idelType/idelType.router';
+import operatingRouter from './operating/operating.router';
 
 const app = express();
 const router = express.Router();
@@ -31,6 +32,7 @@ app.use('/user', userRouter);
 app.use('/referral', referralRouter);
 app.use('/search', searchRouter);
 app.use('/idleType', idleRouter);
+app.use('/operating', operatingRouter);
 
 app.use(errorHandler);
 
