@@ -98,7 +98,8 @@ export const userSignupModel = async (
             age = ?,
             updated_at = ?,
             referralCode = ?,
-            nickName = ?
+            nickName = ?,
+            signUpComplete = ?
         WHERE user_id = ?
     `;
 
@@ -116,6 +117,7 @@ export const userSignupModel = async (
         new Date(),
         referral_code,
         info.nickname,
+        true,
         user_id
     ]);
 

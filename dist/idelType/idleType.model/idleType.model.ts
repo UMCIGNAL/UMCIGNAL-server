@@ -58,12 +58,14 @@ export const addIdleTypeModel = async (
             VALUES (?, ?)
             ON DUPLICATE KEY UPDATE major_name = VALUES(major_name);`;
 
-        console.log("나옴");
-
         for (const major of idleType.major_idle) {
             console.log("major : ", major);
             await conn.query(add_major, [idleTypeId, major]);
         }
+
+        const idleChangeToTrue = `UPDATE user SET idleComplete =? WHERE user_id = ?;`;
+
+        await conn.query(idleChangeToTrue, [true ,user_id]);
 
         await conn.commit();
 
