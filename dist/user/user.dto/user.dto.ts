@@ -9,6 +9,7 @@ export interface UserDto {
     updated_at: Date;
     age : Date;//
     nickname : string;
+    signUpComplete : boolean;
 }
 
 
