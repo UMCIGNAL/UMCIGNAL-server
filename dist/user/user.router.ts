@@ -50,7 +50,7 @@ router.patch('/changeInfo', authenticateToken, changeUserInfoController); // 회
  *                   type: string
  *                   example: "메일 전송 완료"
  *       400:
- *         description: Invalid email format or already registered
+ *         description: Invalid email format
  *         content:
  *           application/json:
  *             schema:
@@ -59,6 +59,26 @@ router.patch('/changeInfo', authenticateToken, changeUserInfoController); // 회
  *                 message:
  *                   type: string
  *                   example: "이메일 형식이 올바르지 않습니다."
+ *       409:
+ *         description: Email already registered but needs reactivation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "기존 회원 복구 및 로그인 되었습니다."
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "서버 내부 오류 발생"
  */
 
 /**
@@ -94,7 +114,7 @@ router.patch('/changeInfo', authenticateToken, changeUserInfoController); // 회
  *                   type: string
  *                   example: "your_generated_token"
  *       400:
- *         description: 인증 코드가 잘못되었거나, 형식이 맞지 않음
+ *         description: 인증 코드가 제공되지 않음
  *         content:
  *           application/json:
  *             schema:
@@ -102,7 +122,27 @@ router.patch('/changeInfo', authenticateToken, changeUserInfoController); // 회
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "인증 코드는 6자리입니다."
+ *                   example: "인증 코드가 제공되지 않았습니다."
+ *       408:
+ *         description: 인증 코드가 6자리가 아님
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "인증 코드는 6자리여야 합니다."
+ *       401:
+ *         description: 인증 코드가 올바르지 않음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "인증 코드가 올바르지 않습니다. 다시 인증해주세요."
  *       500:
  *         description: 서버 오류
  *         content:
@@ -114,6 +154,7 @@ router.patch('/changeInfo', authenticateToken, changeUserInfoController); // 회
  *                   type: string
  *                   example: "서버 오류가 발생했습니다."
  */
+
 
 /**
  * @swagger
@@ -190,8 +231,24 @@ router.patch('/changeInfo', authenticateToken, changeUserInfoController); // 회
  *                   example: ["gender", "student_major"]
  *       401:
  *         description: 인증되지 않은 요청 (토큰이 없거나 유효하지 않음)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "토큰이 유효하지 않습니다."
  *       500:
  *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "서버 오류가 발생했습니다."
  */
 
 /**
@@ -230,7 +287,17 @@ router.patch('/changeInfo', authenticateToken, changeUserInfoController); // 회
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "로그인 되어있지 않습니다."
+ *                   example: "토큰이 유효하지 않습니다."
+ *       404:
+ *         description: 요청에 토큰이 포함되지 않음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "토큰이 없습니다."
  *       500:
  *         description: 서버 오류
  *         content:
@@ -280,7 +347,17 @@ router.patch('/changeInfo', authenticateToken, changeUserInfoController); // 회
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "로그인 되어있지 않습니다."
+ *                   example: "토큰이 유효하지 않습니다."
+ *       404:
+ *         description: 요청에 토큰이 포함되지 않음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "토큰이 없습니다."
  *       500:
  *         description: 서버 오류
  *         content:
@@ -325,9 +402,9 @@ router.patch('/changeInfo', authenticateToken, changeUserInfoController); // 회
  *                 description: "흡연 여부 (true: 흡연, false: 비흡연)"
  *                 example: true
  *               is_drinking:
- *                 type: integer
+ *                 type: boolean
  *                 description: "음주 여부 (true: 음주, false: 비음주)"
- *                 example: 2
+ *                 example: false
  *               instagram_id:
  *                 type: string
  *                 description: "사용자의 인스타그램 아이디"
@@ -371,6 +448,26 @@ router.patch('/changeInfo', authenticateToken, changeUserInfoController); // 회
  *                 message:
  *                   type: string
  *                   example: "로그인 되어있지 않습니다."
+ *       403:
+ *         description: "잘못된 토큰"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "토큰이 유효하지 않습니다."
+ *       404:
+ *         description: "토큰이 제공되지 않음"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "토큰이 없습니다."
  *       500:
  *         description: "서버 오류"
  *         content:
