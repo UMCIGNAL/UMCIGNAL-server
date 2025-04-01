@@ -38,6 +38,14 @@ router.get('/specificMajor', authenticateToken,specificMajorController);
  *                         type: string
  *       500:
  *         description: "서버 에러"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "서버 에러 입니다."
  */
 
 
@@ -77,7 +85,23 @@ router.get('/specificMajor', authenticateToken,specificMajorController);
  *                         example: "인문사회과학대학"
  *       400:
  *         description: majorId가 없을 경우 발생하는 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "전공 id를 입력해주세요."
  *       500:
  *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "서버 에러입니다."
  */
 export default router;

@@ -26,7 +26,7 @@ export const specificMajorController = async (
         const major_id = Number(req.query.majorId);
 
         if (!major_id) {
-            return res.status(400).json({ message: "전공 id를 입력해주세요." });
+            return res.status(402).json({ message: "전공 id를 입력해주세요." });
         }
 
         const result: majorDTO[] = await specificMajorService(major_id);
