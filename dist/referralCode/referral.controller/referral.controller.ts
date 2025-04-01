@@ -13,11 +13,11 @@ export const findReferralController = async (
         const referralCode = req.body.referralCode as string;
 
         if(!token) {
-            return res.status(401).json({message: '토큰이 없습니다.'});
+            return res.status(404).json({message: '토큰이 없습니다.'});
         }
 
         if(!referralCode) {
-            return res.status(400).json({message: '추천 코드가 없습니다.'});
+            return res.status(404).json({message: '추천 코드가 없습니다.'});
         }
         
         const user_id = decodeTokenUserId(token) as number;
@@ -30,10 +30,10 @@ export const findReferralController = async (
             const result = await findReferralService(user_id, referralCode);
 
             if(result.length > 6) {
-                return res.status(400).json({ result });
+                return res.status(409).json({ result });
             }
 
-            return res.status(200).json({ result , message : '추천인 코드가 적용되었습니다.'});
+            return res.status(203).json({ result , message : '추천인 코드가 적용되었습니다.'});
         }
 
     } catch (error : any) {
@@ -51,7 +51,7 @@ export const getMyReferralCodeController = async(
     const user_id = decodeTokenUserId(token as string) as number;
 
     if(!token) {
-        return res.status(401).json({message: '토큰이 없습니다.'}); 
+        return res.status(404).json({message: '토큰이 없습니다.'}); 
     } 
 
     const check = await check_token(user_id);
@@ -62,9 +62,9 @@ export const getMyReferralCodeController = async(
         const result = await getMyRefferalService(user_id);  
 
         if(!result) {
-            return res.status(400).json({ message : '추천 코드가 없습니다.' });
+            return res.status(404).json({ message : '추천 코드가 없습니다.' });
         }
 
-        return res.status(200).json({ message : "추천인 코드는 ", result });
+        return res.status(202).json({ message : "추천인 코드는 ", result });
     }
 };

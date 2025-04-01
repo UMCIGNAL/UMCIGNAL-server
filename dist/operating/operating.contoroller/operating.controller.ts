@@ -25,14 +25,16 @@ export const checkSignUpController = async (
         const check = await check_token(user_id);
     
         if(check === false) {
-            return res.status(402).json({ message: '로그인 되어있지 않습니다.' });
+            return res.status(401).json({ message: '로그인 되어있지 않습니다.' });
         } else if(check === true) {
             const result_signUp = await checkSignUpService(user_id);
+            let result_idle;
+            result_idle = false;
 
             if(result_signUp === false) {
-                return res.status(403).json({ result_signUp : result_signUp , message : '회원가입을 하지 않은 유저입니다다.'});    
+                return res.status(403).json({ signUpStatus : result_signUp , idleTypeStatus : result_idle, message : '회원가입을 하지 않은 유저입니다.'});    
             } else {
-                const result_idle = await checkIdleInsertService(user_id);
+                result_idle = await checkIdleInsertService(user_id);
 
                 if(result_idle === false) {
                     return res.status(403).json({ 
@@ -43,7 +45,7 @@ export const checkSignUpController = async (
                 }
             }
 
-            return res.status(200).json({ message : '회원가입과 이상형 정보를 모두 넣은 유저입니다.'});
+            return res.status(200).json({ signUpStatus : result_signUp , idleTypeStatus : result_idle, message : '회원가입과 이상형 정보를 모두 넣은 유저입니다.'});
         }
     } catch (error : any) {
         console.log(error);

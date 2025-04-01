@@ -113,6 +113,8 @@ router.get('/reroll', authenticateToken, rerollController);
  *         description: 인증되지 않았습니다.
  *       403:
  *         description: 토큰이 유효하지 않습니다.
+ *       500:
+ *         description: 서버 에러
  */
 
 /**
@@ -178,6 +180,16 @@ router.get('/reroll', authenticateToken, rerollController);
  *                 message:
  *                   type: string
  *                   example: "토큰이 유효하지 않습니다."
+ *       404:
+ *         description: "이상형을 찾지 못 함"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "이상형을 찾지 못 하였습니다."
  *       500:
  *         description: "서버 오류"
  *         content:
@@ -202,7 +214,7 @@ router.get('/reroll', authenticateToken, rerollController);
  *       - BearerAuth: []
  *     responses:
  *       200:
- *         description: ReRoll 성공
+ *         description: "ReRoll 성공"
  *         content:
  *           application/json:
  *             schema:
@@ -215,7 +227,7 @@ router.get('/reroll', authenticateToken, rerollController);
  *                   type: string
  *                   example: "이상형을 찾았습니다!"
  *       401:
- *         description: 인증되지 않음 (토큰 없음 또는 로그인 안 됨)
+ *         description: "토큰이 없거나 유효하지 않음"
  *         content:
  *           application/json:
  *             schema:
@@ -225,17 +237,7 @@ router.get('/reroll', authenticateToken, rerollController);
  *                   type: string
  *                   example: "토큰이 없습니다."
  *       403:
- *         description: 유효하지 않은 토큰
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "토큰이 유효하지 않습니다."
- *       405:
- *         description: ReRoll 횟수 초과
+ *         description: "ReRoll 횟수 초과"
  *         content:
  *           application/json:
  *             schema:
@@ -244,8 +246,18 @@ router.get('/reroll', authenticateToken, rerollController);
  *                 message:
  *                   type: string
  *                   example: "ReRoll 횟수를 모두 소진하셨습니다."
+ *       404:
+ *         description: "이상형을 찾지 못 함"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "이상형을 찾지 못 하였습니다."
  *       500:
- *         description: 서버 에러
+ *         description: "서버 오류"
  *         content:
  *           application/json:
  *             schema:

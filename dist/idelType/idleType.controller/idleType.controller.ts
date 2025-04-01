@@ -13,13 +13,13 @@ export const addIdleTypeController = async (
         const token = req.headers.authorization?.split(' ')[1];
 
         if(!token) {
-            return res.status(401).json({ message: '토큰이 없습니다.' });
+            return res.status(404).json({ message: '토큰이 없습니다.' });
         }
         
         const user_id = decodeTokenUserId(token) as number;
         
         if(user_id === null) {
-            return res.status(403).json({ message: '토큰이 유효하지 않습니다.' });
+            return res.status(401).json({ message: '토큰이 유효하지 않습니다.' });
         }
 
         const check = await check_token(user_id);
@@ -37,14 +37,14 @@ export const addIdleTypeController = async (
             if (!(idleType.major_idle.length > 0)) missingFields.push("major_idle");
             
             if (missingFields.length > 0) {
-                return res.status(400).json({
+                return res.status(402).json({
                     message: "필수 입력값이 누락되었습니다.",
                     missingFields
                 });
             }
             
             await addIdleTypeService(user_id, idleType);
-            return res.status(200).json({ message: '이상형 정보가 추가되었습니다.' });
+            return res.status(201).json({ message: '이상형 정보가 추가되었습니다.' });
         }
     }catch(error : any) {
         console.log(error);
@@ -62,13 +62,13 @@ export const fixIdleTypeController = async(
         const token = req.headers.authorization?.split(' ')[1];
 
         if(!token) {
-            return res.status(401).json({ message: '토큰이 없습니다.' });
+            return res.status(404).json({ message: '토큰이 없습니다.' });
         }
         
         const user_id = decodeTokenUserId(token) as number;
         
         if(user_id === null) {
-            return res.status(403).json({ message: '토큰이 유효하지 않습니다.' });
+            return res.status(401).json({ message: '토큰이 유효하지 않습니다.' });
         }
 
         const check = await check_token(user_id);
@@ -78,7 +78,7 @@ export const fixIdleTypeController = async(
             return res.status(401).json({ message: '로그인 되어있지 않습니다.' });
         } else if(check === true) {            
             await fixIdleTypeService(user_id, idleType);
-            return res.status(200).json({ message: '이상형 정보가 추가되었습니다.' });
+            return res.status(201).json({ message: '이상형 정보가 수정되었습니다.' });
         }
     } catch (error) {
         return res.status(500).json({ message : '서버 에러입니다.' });
@@ -95,13 +95,13 @@ export const findIdleTypeController = async (
         const token = req.headers.authorization?.split(' ')[1];
 
         if(!token) {
-            return res.status(401).json({ message: '토큰이 없습니다.' });
+            return res.status(404).json({ message: '토큰이 없습니다.' });
         }
         
         const user_id = decodeTokenUserId(token) as number;
         
         if(user_id === null) {
-            return res.status(403).json({ message: '토큰이 유효하지 않습니다.' });
+            return res.status(401).json({ message: '토큰이 유효하지 않습니다.' });
         }
 
         const check = await check_token(user_id);
@@ -112,9 +112,9 @@ export const findIdleTypeController = async (
             const result = await findIdleTypeService(user_id);
 
             if(result === null) {
-                return res.status(404).json({ message: '이상형을 찾지 못 하였습니다.' });
+                return res.status(406).json({ message: '이상형을 찾지 못 하였습니다.' });
             }
-            return res.status(200).json({ result, message : '이상형을 찾았습니다!' });
+            return res.status(202).json({ result, message : '이상형을 찾았습니다!' });
         }        
     } catch(error) {
         return res.status(500).json({ message : '서버 에러입니다.' });
@@ -130,13 +130,13 @@ export const rerollController = async (
         const token = req.headers.authorization?.split(' ')[1];
 
         if(!token) {
-            return res.status(401).json({ message: '토큰이 없습니다.' });
+            return res.status(404).json({ message: '토큰이 없습니다.' });
         }
         
         const user_id = decodeTokenUserId(token) as number;
         
         if(user_id === null) {
-            return res.status(403).json({ message: '토큰이 유효하지 않습니다.' });
+            return res.status(401).json({ message: '토큰이 유효하지 않습니다.' });
         }
 
         const check = await check_token(user_id);
@@ -147,12 +147,12 @@ export const rerollController = async (
             const result = await rerollService(user_id);
 
             if(result === 0) {
-                return res.status(405).json({ message: 'ReRoll 횟수를 모두 소진하셨습니다.' });
+                return res.status(407).json({ message: 'ReRoll 횟수를 모두 소진하셨습니다.' });
             } else if(result === null) {
-                return res.status(404).json({ message: '이상형을 찾지 못 하였습니다.' });
+                return res.status(406).json({ message: '이상형을 찾지 못 하였습니다.' });
             }
 
-            return res.status(200).json({ result, message : '이상형을 찾았습니다!' });
+            return res.status(202).json({ result, message : '이상형을 찾았습니다!' });
         }        
     } catch(error) {
         return res.status(500).json({ message : '서버 에러입니다.' });
