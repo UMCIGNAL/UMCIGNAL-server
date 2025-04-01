@@ -10,6 +10,8 @@ import referralRouter from './referralCode/referral.router';
 import searchRouter from './search/search.router';
 import idleRouter from './idelType/idelType.router';
 import operatingRouter from './operating/operating.router';
+import serialCodeRouter from './serialCode/serialCode.router';
+import healthRouter from './healthCheck/health.router';
 
 const app = express();
 const router = express.Router();
@@ -33,6 +35,8 @@ app.use('/referral', referralRouter);
 app.use('/search', searchRouter);
 app.use('/idleType', idleRouter);
 app.use('/operating', operatingRouter);
+app.use('/serialCode', serialCodeRouter);
+app.use('/health', healthRouter);
 
 app.use(errorHandler);
 
