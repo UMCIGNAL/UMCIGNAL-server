@@ -1,11 +1,12 @@
 import { Router } from 'express';
 import { getCode } from '../middlware/serialCode.middleware';
-import { insertCodeController } from './serialCode.controller/serialCode.controller';
+import { insertCodeController, myRerollController } from './serialCode.controller/serialCode.controller';
 
 const router = Router();
 
 // router.get('/getCode', getCode);
 router.patch('/insertCode', insertCodeController);
+router.get('/myReroll', myRerollController);
 
 /**
  * @ swagger
@@ -98,4 +99,62 @@ router.patch('/insertCode', insertCodeController);
  *                   type: string
  *                   example: "서버 에러입니다."
  */
+
+
+/**
+ * @swagger
+ * /serialCode/myReroll:
+ *   get:
+ *     summary: 내 리롤 횟수를 조회합니다.
+ *     description: 사용자의 인증 토큰을 확인한 후, 해당 사용자의 리롤 정보를 반환합니다.
+ *     tags:
+ *       - Serial Code
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       202:
+ *         description: 코드가 정상적으로 추가됨
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 result:
+ *                   type: object
+ *                   description: 리롤 서비스 결과 데이터
+ *                 message:
+ *                   type: string
+ *                   example: 코드가 정상적으로 추가되었습니다.
+ *       401:
+ *         description: 인증 오류 (유효하지 않은 토큰 또는 로그인 필요)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 로그인 되어있지 않습니다.
+ *       404:
+ *         description: 요청에 토큰이 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 토큰이 없습니다.
+ *       500:
+ *         description: 서버 에러
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 서버 에러입니다.
+ */
+
 export default router;

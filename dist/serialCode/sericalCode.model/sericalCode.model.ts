@@ -42,4 +42,18 @@ export const insertCodeModel = async (
         }
     }
     
+
+};
+
+
+export const myRerollModel = async (
+    user_id : number
+): Promise<number> => {
+    const pool = await getPool();
+
+    const query = `SELECT reroll FROM user WHERE user_id = ?`;
+
+    const [reroll]:any = await pool.query(query, [user_id]);
+
+    return reroll[0].reroll;
 };
