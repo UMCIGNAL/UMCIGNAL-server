@@ -1,5 +1,6 @@
 import { insertCodeModel, myRerollModel } from "../sericalCode.model/sericalCode.model";
 
+
 export const insertCodeService = async (
     user_id : number,
     serialCode : String
@@ -7,7 +8,7 @@ export const insertCodeService = async (
     const result = await insertCodeModel(user_id, serialCode);
 
     return result;
-}
+};
 
 export const myRerollService = async (
     user_id : number

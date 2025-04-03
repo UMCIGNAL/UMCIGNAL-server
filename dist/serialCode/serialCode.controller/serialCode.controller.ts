@@ -43,7 +43,7 @@ export const insertCodeController = async (
     } catch (error : any) {
         return res.status(500).json({ message : '서버 에러입니다.'});
     }
-}
+};
 
 export const myRerollController = async (
     req : Request,
