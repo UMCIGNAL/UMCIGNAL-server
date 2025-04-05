@@ -1,4 +1,3 @@
-import e from "express";
 import { generateCode, sendEmail } from "../../security/mail/mail.sender";
 import { changeUserInfoModel, mailVerifyModel, sendMailModel, userLogOutModel, userSignOutModel, userSignupModel } from "../user.model/user.model";
 import { userChangeInfoDTO, UserDto } from "../user.dto/user.dto";
@@ -16,7 +15,7 @@ export const sendMailCodeService = async (
     const user_id = await sendMailModel(email, verficationCode);
 
     return user_id;
-}
+};
 
 export const mailVerifyService = async (
     mailVerification : string
