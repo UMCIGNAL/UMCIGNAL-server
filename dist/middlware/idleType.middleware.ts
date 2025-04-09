@@ -25,9 +25,14 @@ export const defineGender = async (
     }
 
     const gender = user_gender[0].gender;
-    console.log("Gender search 1:", gender);
 
-    return gender === 'male' ? 'female' : 'male';
+    if(gender === 'male') {
+        return 'female';
+    } else if(gender === 'female') {
+        return 'male';    
+    } else {
+        return 'other';
+    }
   } catch (error) {
     console.error("Error in defineGender:", error);
     throw error;
@@ -44,7 +49,7 @@ export const findIdleUser = async (
         const findIdleQuery = `
             SELECT user_id, nickName, is_smoking, is_drinking, MBTI, student_major, instagram_id, age
             FROM user
-            WHERE gender = ?
+            WHERE gender = ?;
         `;
 
         // pool.query 대신 conn.query 사용
@@ -142,7 +147,7 @@ export const reroll = async (
         const findIdleQuery = `
             SELECT user_id, nickName, is_smoking, is_drinking, MBTI, student_major, instagram_id, age
             FROM user
-            WHERE gender = ?
+            WHERE gender = ?;
         `;
 
         // pool.query 대신 conn.query 사용
@@ -236,7 +241,7 @@ export const findIdleTypeInTable = async (
     const findIdleQuery = `
             SELECT user_id, nickName, is_smoking, is_drinking, MBTI, student_major, instagram_id, age
             FROM user
-            WHERE user_id = ?
+            WHERE user_id = ?;
         `;
 
     const [findResult]:any = await conn.query(findIdleQuery, [idle_duplicate]);
