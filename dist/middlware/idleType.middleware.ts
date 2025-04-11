@@ -166,7 +166,7 @@ export const reroll = async (
 
         const chanceToReroll = await rerollCount(user_id, conn);
 
-        if(chanceToReroll > 0) {
+        if(chanceToReroll >= 0) {
             do {
                 const index = makeRandomIndex(idleArray.length);
                 idle_user = idleArray[index];
