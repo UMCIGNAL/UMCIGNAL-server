@@ -203,10 +203,12 @@ export const rerollModel = async(
 
         const result = await reroll(gender, user_id, conn);
 
-        if (!result) {
-            throw new Error("이상형 유저를 찾을 수 없습니다.");
+        if (!result && result !== 0) {
+            await conn.rollback();
+            return null;        
         } else if(result === 0) {
-            throw new Error("Reroll 횟수를 모두 소진하였습니다.");
+            await conn.rollback();
+            return 0;
         }
 
         await conn.commit();

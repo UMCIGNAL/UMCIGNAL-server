@@ -147,7 +147,7 @@ export const rerollController = async (
             const result = await rerollService(user_id);
 
             if(result === 0) {
-                return res.status(407).json({ message: 'ReRoll 횟수를 모두 소진하셨습니다.' });
+                return res.status(400).json({ message: 'ReRoll 횟수를 모두 소진하셨습니다.' });
             } else if(result === null) {
                 return res.status(406).json({ message: '이상형을 찾지 못 하였습니다.' });
             }
