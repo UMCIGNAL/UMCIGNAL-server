@@ -12,6 +12,7 @@ import idleRouter from './idelType/idelType.router';
 import operatingRouter from './operating/operating.router';
 import serialCodeRouter from './serialCode/serialCode.router';
 import healthRouter from './healthCheck/health.router';
+import rootRouter from './aroot/root.router';
 
 const app = express();
 const router = express.Router();
@@ -37,6 +38,8 @@ app.use('/idleType', idleRouter);
 app.use('/operating', operatingRouter);
 app.use('/serialCode', serialCodeRouter);
 app.use('/health', healthRouter);
+
+app.use('/root', rootRouter);
 
 app.use(errorHandler);
 
