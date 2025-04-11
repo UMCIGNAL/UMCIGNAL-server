@@ -166,7 +166,7 @@ export const reroll = async (
 
         const chanceToReroll = await rerollCount(user_id, conn);
 
-        if(chanceToReroll >= 0) {
+        if(chanceToReroll > 0) {
             do {
                 const index = makeRandomIndex(idleArray.length);
                 idle_user = idleArray[index];
@@ -216,13 +216,13 @@ export const rerollCount = async (
 
     const currentReroll = result[0].reroll;
     
-    if (currentReroll <= 0) return 0; // reroll 횟수가 0 이면 0 반환
+    if (currentReroll === 0) return 0; // reroll 횟수가 0 이면 0 반환
 
     // reroll 값을 1 감소
     const updateQuery = `UPDATE user SET reroll = ? WHERE user_id = ?;`;
     await conn.query(updateQuery, [currentReroll - 1, user_id]);
 
-    return currentReroll - 1; 
+    return currentReroll; 
 };
 
 // 찾아진 이상형 테이블에서 찾는 함수
