@@ -54,8 +54,7 @@ export const findIdleUser = async (
 
         // pool.query 대신 conn.query 사용
         const [idleArray]:any = await conn.query<RowDataPacket[]>(findIdleQuery, [gender]);
-        console.log("Found users count:", idleArray.length);
-
+        
         if (idleArray.length === 0) {
             return null; 
         }
