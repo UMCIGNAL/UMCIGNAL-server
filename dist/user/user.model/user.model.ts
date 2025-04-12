@@ -98,7 +98,6 @@ export const userSignupModel = async (
             age = ?,
             updated_at = ?,
             referralCode = ?,
-            nickName = ?,
             signUpComplete = ?
         WHERE user_id = ?
     `;
@@ -116,7 +115,6 @@ export const userSignupModel = async (
         convert_age,
         new Date(),
         referral_code,
-        info.nickname,
         true,
         user_id
     ]);
@@ -179,8 +177,7 @@ export const changeUserInfoModel = async (
             is_smoking = ?,
             is_drinking = ?,
             instagram_id = ?,
-            updated_at = ?,
-            nickName = ?
+            updated_at = ?
         WHERE user_id = ?
         `;
 
@@ -190,7 +187,6 @@ export const changeUserInfoModel = async (
         userInfo.is_drinking,
         userInfo.instagram_id,
         new Date(),
-        userInfo.nickname,
         user_id
     ]);
 };

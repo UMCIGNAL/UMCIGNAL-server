@@ -5,9 +5,9 @@ const Gender = {
 };
 
 const DrinkingStatus = {
-    NONE: '0',
-    LIGHT: '1',
-    HEAVY: '2'
+    NONE: '1',
+    LIGHT: '2',
+    HEAVY: '3'
 };
 
 const User = {
