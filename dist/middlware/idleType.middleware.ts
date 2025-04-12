@@ -314,24 +314,24 @@ export const scoreLatefunc = async (
         if (myIdleCompare.idle_MBTI.length === 4 && idle_user.MBTI.length === 4) {
           for (let i = 0; i < 4; i++) {
             if (myIdleCompare.idle_MBTI[i] !== idle_user.MBTI[i]) {
-              score -= 5; // 각 문자마다 파싱해서 다르면 5점 삭감
+              score -= 6; // 각 문자마다 파싱해서 다르면 5점 삭감
             }
           }
         } else if (myIdleCompare.idle_MBTI !== idle_user.MBTI) {
-          score -= 20;
+          score -= 24;
         }
       }
       
  
       if (myIdleCompare.smoking_idle !== null && idle_user.is_smoking !== null) {
         if (myIdleCompare.smoking_idle !== idle_user.is_smoking) {
-          score -= 15;
+          score -= 18;
         }
       }
       
       if (myIdleCompare.drinking_idle !== null && idle_user.is_drinking !== null) {
         if (myIdleCompare.drinking_idle !== idle_user.is_drinking) {
-          score -= 15;
+          score -= 17;
         }
       }
       
@@ -343,7 +343,7 @@ export const scoreLatefunc = async (
           (myIdleCompare.age_gap === 1 && idle_user.age !== myAge) || 
           (myIdleCompare.age_gap === 2 && idle_user.age <= myAge)    
         ) {
-          score -= 10;
+          score -= 16;
         }
       }
       
@@ -357,7 +357,7 @@ export const scoreLatefunc = async (
           const [avoidedMajors]: any = await conn.query(avoidedMajorsQuery, [myIdleCompare.idleType_id, idle_user.student_major]);
           
           if (avoidedMajors && avoidedMajors.length > 0) {
-            score -= 20;
+            score -= 25;
           }
         }
       }
