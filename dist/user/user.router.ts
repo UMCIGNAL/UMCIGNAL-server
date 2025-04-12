@@ -197,9 +197,6 @@ router.patch('/changeInfo', authenticateToken, changeUserInfoController); // 회
  *               age :
  *                 type: number
  *                 example: 2001-06-01
- *               nickname:
- *                type: string
- *                example: "준"
  *     responses:
  *       201:
  *         description: 회원가입 성공
@@ -403,15 +400,12 @@ router.patch('/changeInfo', authenticateToken, changeUserInfoController); // 회
  *                 example: true
  *               is_drinking:
  *                 type: boolean
- *                 description: "음주 여부 (true: 음주, false: 비음주)"
+ *                 description: "음주 여부 (1 : 안마심, 2 : 1병 미만, 3 : 1병 이상)"
  *                 example: false
  *               instagram_id:
  *                 type: string
  *                 description: "사용자의 인스타그램 아이디"
  *                 example: "wwnnss08"
- *               nickname:
- *                 type: string
- *                 example: "Jun"
  *     responses:
  *       200:
  *         description: "회원 정보 변경 성공"

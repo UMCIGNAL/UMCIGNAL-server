@@ -99,7 +99,6 @@ export const userSignupController = async (
         if (info.is_drinking === undefined) missingFields.push("is_drinking");
         if (!info.instagram_id) missingFields.push("instagram_id");
         if (!info.age) missingFields.push("age");
-        if (!info.nickname) missingFields.push("nickname");
 
         // 누락된 필드가 있으면 400 응답
         if (missingFields.length > 0) {
@@ -243,7 +242,6 @@ export const changeUserInfoController = async (
             if (userInfo.is_smoking === undefined) missingFields.push("is_smoking");
             if (userInfo.is_drinking === undefined) missingFields.push("is_drinking");
             if (!userInfo.instagram_id) missingFields.push("instagram_id");
-            if (!userInfo.nickname) missingFields.push("nickname");
 
             // 누락된 필드가 있으면 400 응답
             if (missingFields.length > 0) {

@@ -47,7 +47,7 @@ export const findIdleUser = async (
 ): Promise<{ findUser: foundUser } | null> => {
     try {
         const findIdleQuery = `
-            SELECT user_id, nickName, is_smoking, is_drinking, MBTI, student_major, instagram_id, age
+            SELECT user_id, is_smoking, is_drinking, MBTI, student_major, instagram_id, age
             FROM user
             WHERE gender = ?;
         `;
@@ -81,7 +81,6 @@ export const findIdleUser = async (
 
         const foundUser: foundUser = {
             user_id: idle_UserId,
-            nickName: idle_user.nickName,
             is_smoking: idle_user.is_smoking,
             is_drinking: idle_user.is_drinking,
             idle_MBTI: idle_user.MBTI,
@@ -144,7 +143,7 @@ export const reroll = async (
 ): Promise<{ findUser: foundUser } | number | null> => {
     try {
         const findIdleQuery = `
-            SELECT user_id, nickName, is_smoking, is_drinking, MBTI, student_major, instagram_id, age
+            SELECT user_id, is_smoking, is_drinking, MBTI, student_major, instagram_id, age
             FROM user
             WHERE gender = ?;
         `;
@@ -183,7 +182,6 @@ export const reroll = async (
     
             const foundUser: foundUser = {
                 user_id: idle_UserId,
-                nickName: idle_user.nickName,
                 is_smoking: idle_user.is_smoking,
                 is_drinking: idle_user.is_drinking,
                 idle_MBTI: idle_user.MBTI,
@@ -238,16 +236,15 @@ export const findIdleTypeInTable = async (
     const idle_duplicate = result[index].friend_id; // index에서 이미 찾은 친구 id를 반환
 
     const findIdleQuery = `
-            SELECT user_id, nickName, is_smoking, is_drinking, MBTI, student_major, instagram_id, age
+            SELECT user_id, is_smoking, is_drinking, MBTI, student_major, instagram_id, age
             FROM user
             WHERE user_id = ?;
         `;
 
     const [findResult]:any = await conn.query(findIdleQuery, [idle_duplicate]);
-
+        
     const foundUser: foundUser = {
         user_id: findResult[0].user_id,
-        nickName: findResult[0].nickName,
         is_smoking: findResult[0].is_smoking,
         is_drinking: findResult[0].is_drinking,
         idle_MBTI: findResult[0].MBTI,
