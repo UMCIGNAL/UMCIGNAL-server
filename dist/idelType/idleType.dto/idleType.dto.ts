@@ -16,7 +16,6 @@ export interface fixIdleType {
 
 export interface foundUser {
     user_id : number;
-    nickName : String;
     is_smoking : boolean;
     is_drinking : number;
     idle_MBTI : String;
