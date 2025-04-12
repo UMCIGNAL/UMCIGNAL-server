@@ -363,6 +363,7 @@ export const scoreLatefunc = async (
       }
       
       
+      // 만약 점수가 0 또는 100 이상으로 갔을 경우
       return Math.max(0, Math.min(100, score));
     } catch (error) {
       console.error("Error in scoreLatefunc:", error);
