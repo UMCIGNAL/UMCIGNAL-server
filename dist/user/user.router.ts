@@ -59,7 +59,7 @@ router.patch('/changeInfo', authenticateToken, changeUserInfoController); // 회
  *                 message:
  *                   type: string
  *                   example: "이메일 형식이 올바르지 않습니다."
- *       409:
+ *       201:
  *         description: Email already registered but needs reactivation
  *         content:
  *           application/json:
