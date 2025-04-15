@@ -28,7 +28,7 @@ export const sendMailCodeController = async (
         
         // 이미 가입된 경우 예외처리 (토큰이 만료됬을 경우 즉 이메일 재 전송 요함) || 신규 회원도 메일 전송
         if(result === 0) {
-            return res.status(201).json({ message: '기존 회원 복구 및 로그인 되었습니다.' });
+            return res.status(201).json({ message: '기존 회원 복구 및 인증코드를 재전송하였습니다.' });
         }
 
         return res.status(200).json({  userId : result, message: '메일 전송 완료' });
