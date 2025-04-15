@@ -68,7 +68,7 @@ router.patch('/changeInfo', authenticateToken, changeUserInfoController); // 회
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "기존 회원 복구 및 로그인 되었습니다."
+ *                   example: "기존 회원 복구 및 인증코드를 재전송하였습니다."
  *       500:
  *         description: Internal server error
  *         content:
