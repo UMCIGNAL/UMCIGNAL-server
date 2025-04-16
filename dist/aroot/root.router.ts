@@ -1,9 +1,11 @@
 import Router from "express";
-import { getRerollCountController } from "./root.controller/root.controller";
+import { deleteUserController, getRerollCountController } from "./root.controller/root.controller";
+import { authenticateToken } from "../security/JWT/auth.jwt";
 
 const router = Router();
 
-router.patch('/getRorollCount', getRerollCountController);
+router.patch('/getRorollCount', authenticateToken, getRerollCountController);
+router.delete('/deleteUser', authenticateToken, deleteUserController);
 
 /**
  * @swagger
@@ -59,5 +61,54 @@ router.patch('/getRorollCount', getRerollCountController);
  *                   example: "서버 에러입니다."
  */
 
-
+/**
+ * @swagger
+ * /root/deleteUser:
+ *   delete:
+ *     summary: 유저 삭제
+ *     description: 인증된 유저만 유저를 삭제할 수 있습니다. 토큰을 통해 사용자의 유효성을 검사하고, 로그인이 되어 있는지 확인한 후 유저를 삭제합니다.
+ *     tags:
+ *       - A 관리자의 특권
+ *     responses:
+ *       200:
+ *         description: 유저가 삭제되었습니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "유저가 삭제되었습니다."
+ *       401:
+ *         description: 인증 실패 또는 로그인되지 않은 경우
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "토큰이 유효하지 않습니다."
+ *       404:
+ *         description: 토큰이 제공되지 않은 경우
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "토큰이 없습니다."
+ *       500:
+ *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "서버 에러입니다."
+ */
 export default router;
