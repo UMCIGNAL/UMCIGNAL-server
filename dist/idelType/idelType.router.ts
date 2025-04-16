@@ -38,7 +38,7 @@ router.get('/reroll', authenticateToken, rerollController);
  *                 age_gap:
  *                   type: integer
  *                   example: 1
- *                   description: "연하=0, 동갑=1, 연상=2"
+ *                   description: "연하=1, 동갑=2, 연상=3"
  *                 smoking_idle:
  *                   type: boolean
  *                   example: false
@@ -46,13 +46,17 @@ router.get('/reroll', authenticateToken, rerollController);
  *                 drinking_idle:
  *                   type: integer
  *                   example: 1
- *                   description: "술 마시는 유무 (0,1,2)"
+ *                   description: "술 마시는 유무 (1,2,3)"
  *                 major_idle:
  *                   type: array
  *                   items:
  *                     type: string
  *                   example: ["스포츠건강관리전공", "가족복지학과", "컴퓨터과학전공"]
  *                   description: "이상형이 속한 학과"
+ *                 sameMajor:
+ *                   type: boolean
+ *                   example: 1
+ *                   description: "같은 학과 여부 1 : 피하고 2 : 상관 없다"
  *       responses:
  *         200:
  *           description: "이상형 정보가 추가되었습니다."

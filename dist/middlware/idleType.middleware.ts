@@ -407,6 +407,17 @@ export const scoreLatefunc = async (
     conn : PoolConnection
   ):Promise<boolean> => {
       try {
+
+        const checkQuery = `SELECT sameMajor FROM user WHERE user_id = ?;`;
+
+        const [check] : any = await conn.query(checkQuery, [userId]);
+        
+        const result = check[0].sameMajor;
+
+        if(!result) {
+          return false;
+        }
+
         const myMajorQuery = `SELECT student_major FROM user WHERE user_id =?;`;
         const idleMajorQuery = `SELECT student_major FROM user WHERE user_id =?;`;
 

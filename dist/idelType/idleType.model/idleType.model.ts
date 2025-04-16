@@ -23,13 +23,14 @@ export const addIdleTypeModel = async (
         }
 
         const query = `
-            INSERT INTO idleType (user_id, idle_MBTI, age_gap, smoking_idle, drinking_idle)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO idleType (user_id, idle_MBTI, age_gap, smoking_idle, drinking_idle, sameMajor)
+            VALUES (?, ?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE 
                 idle_MBTI = VALUES(idle_MBTI),
                 age_gap = VALUES(age_gap),
                 smoking_idle = VALUES(smoking_idle),
-                drinking_idle = VALUES(drinking_idle);
+                drinking_idle = VALUES(drinking_idle),
+                sameMajor = VALUES(sameMajor);
         `;
     
         await conn.query(query, [
@@ -38,6 +39,7 @@ export const addIdleTypeModel = async (
             idleType.age_gap,
             idleType.smoking_idle,
             idleType.drinking_idle,
+            idleType.sameMajor,
         ]);    
     
         const [majorTableId]: any = 
