@@ -401,7 +401,7 @@ router.patch('/changeInfo', authenticateToken, changeUserInfoController); // 회
  *               is_drinking:
  *                 type: boolean
  *                 description: "음주 여부 (1 : 안마심, 2 : 1병 미만, 3 : 1병 이상)"
- *                 example: false
+ *                 example: 1
  *               instagram_id:
  *                 type: string
  *                 description: "사용자의 인스타그램 아이디"
