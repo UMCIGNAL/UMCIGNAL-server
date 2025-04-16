@@ -78,12 +78,18 @@ export const findIdleUser = async (
         idle_UserId = idle_user.user_id;
   
         isDuplicate = await duplicateUser(user_id, idle_UserId, conn);
+
+        const check_major = await avoidSameMajor(user_id, idle_UserId, conn);
+
+        if(check_major) {
+          continue; 
+        }
         
         attempts++;
         if (attempts >= MAX_ATTEMPTS && isDuplicate) {
           return null; 
         }
-      } while (isDuplicate); 
+      } while (isDuplicate);  
   
       const foundUser: foundUser = {
         user_id: idle_UserId,
@@ -188,15 +194,19 @@ export const reroll = async (
                 idle_UserId = idle_user.user_id;
     
                 isDuplicate = await duplicateUser(user_id, idle_UserId, conn);
+
+                const checkMajor = await avoidSameMajor(user_id, idle_UserId, conn);
                 
+                if(checkMajor) { // true라면 같은 전공이면 피해야함
+                    continue;
+                } 
+
                 attempts++;
                 if (attempts >= MAX_ATTEMPTS && isDuplicate) { // 더 이상 찾을 이상형이 없다면 기존 찾아진 회원에서 찾는 함수
                     
                     const duplicateUserResult = await findIdleTypeInTable(user_id, conn);
                     
-                    // Check if duplicateUserResult is an object with findUser property
                     if (duplicateUserResult && typeof duplicateUserResult === 'object' && 'findUser' in duplicateUserResult) {
-                        // Calculate score for the duplicate user
                         const duplicateUser = duplicateUserResult.findUser;
                         const dupUserInfo = {
                             user_id: duplicateUser.user_id,
@@ -228,8 +238,7 @@ export const reroll = async (
                 instagram_id: idle_user.instagram_id,
                 idle_age: idle_user.age,
             };
-    
-            // Calculate compatibility score for the newly found user
+  
             const idleScore = await scoreLatefunc(idle_user, myIdleCompare, conn);
     
             await addFoundUserTable(user_id, idle_UserId, conn);
@@ -390,4 +399,30 @@ export const scoreLatefunc = async (
       console.error("Error fetching user age:", error);
       return 0;
     }
+  };
+
+  const avoidSameMajor = async (
+    userId : number,
+    idleUserId : number,
+    conn : PoolConnection
+  ):Promise<boolean> => {
+      try {
+        const myMajorQuery = `SELECT student_major FROM user WHERE user_id =?;`;
+        const idleMajorQuery = `SELECT student_major FROM user WHERE user_id =?;`;
+
+        const [myMajorResult]:any = await conn.query(myMajorQuery, [userId]);
+        const [idleMajorResult]:any = await conn.query(idleMajorQuery, [idleUserId]);
+
+        const myMajor = myMajorResult[0]?.student_major;
+        const idleMajor = idleMajorResult[0]?.student_major;
+
+        if(myMajor === idleMajor) {
+          return true;
+        }
+
+        return false;
+      } catch (error) {
+        console.error("Error matching");
+        return false;
+      }
   };

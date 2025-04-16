@@ -21,3 +21,19 @@ export const getRerollCountModel = async(
         throw new Error(error);
     }
 };
+
+export const deleteUserModel = async (
+    user_id : number
+):Promise<void> => {
+    const pool = await getPool();
+
+    try {
+        const query = `DELETE FROM user WHERE user_id = ?;`;
+
+        await pool.query(query, [user_id]);
+
+
+    }catch (error : any) {
+        throw new Error(error);
+    }
+};
