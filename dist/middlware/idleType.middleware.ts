@@ -69,27 +69,25 @@ export const findIdleUser = async (
       let idle_UserId: number;
       let idle_user: any;
       let isDuplicate: boolean;
+      let isSameMajor: boolean;
       let attempts = 0;
       const MAX_ATTEMPTS = 15; // 무한 루프 방지
   
       do {
+        if (attempts >= MAX_ATTEMPTS) {
+          return null; // 최대 시도 횟수 초과하면 null 반환
+        }
+        
         const index = makeRandomIndex(idleArray.length);
         idle_user = idleArray[index];
         idle_UserId = idle_user.user_id;
   
         isDuplicate = await duplicateUser(user_id, idle_UserId, conn);
-
-        const check_major = await avoidSameMajor(user_id, idle_UserId, conn);
-
-        if(check_major) {
-          continue; 
-        }
+        isSameMajor = await avoidSameMajor(user_id, idle_UserId, conn);
         
         attempts++;
-        if (attempts >= MAX_ATTEMPTS && isDuplicate) {
-          return null; 
-        }
-      } while (isDuplicate);  
+        
+      } while (isDuplicate || isSameMajor); 
   
       const foundUser: foundUser = {
         user_id: idle_UserId,
@@ -408,7 +406,7 @@ export const scoreLatefunc = async (
   ):Promise<boolean> => {
       try {
 
-        const checkQuery = `SELECT sameMajor FROM user WHERE user_id = ?;`;
+        const checkQuery = `SELECT sameMajor FROM idleType WHERE user_id = ?;`;
 
         const [check] : any = await conn.query(checkQuery, [userId]);
         
@@ -427,11 +425,7 @@ export const scoreLatefunc = async (
         const myMajor = myMajorResult[0]?.student_major;
         const idleMajor = idleMajorResult[0]?.student_major;
 
-        if(myMajor === idleMajor) {
-          return true;
-        }
-
-        return false;
+        return myMajor === idleMajor;
       } catch (error) {
         console.error("Error matching");
         return false;

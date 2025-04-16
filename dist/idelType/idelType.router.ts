@@ -55,8 +55,8 @@ router.get('/reroll', authenticateToken, rerollController);
  *                   description: "이상형이 속한 학과"
  *                 sameMajor:
  *                   type: boolean
- *                   example: 1
- *                   description: "같은 학과 여부 1 : 피하고 2 : 상관 없다"
+ *                   example: 0
+ *                   description: "같은 학과 여부 0 : 피하고 1 : 상관 없다"
  *       responses:
  *         200:
  *           description: "이상형 정보가 추가되었습니다."
