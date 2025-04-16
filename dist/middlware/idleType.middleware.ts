@@ -153,105 +153,110 @@ export const addFoundUserTable = async (
 
 // reroll 함수
 export const reroll = async (
-    gender: String,
-    user_id: number,
-    conn: PoolConnection
+  gender: String,
+  user_id: number,
+  conn: PoolConnection
 ): Promise<{ findUser: foundUser, idleScore: number } | number | null> => {
-    try {
-        const findIdleQuery = `
-            SELECT user_id, is_smoking, is_drinking, MBTI, student_major, instagram_id, age
-            FROM user
-            WHERE gender = ?;
-        `;
+  try {
+      const findIdleQuery = `
+          SELECT user_id, is_smoking, is_drinking, MBTI, student_major, instagram_id, age
+          FROM user
+          WHERE gender = ?;
+      `;
 
-        // 내 이상형 테이블 불러오기
-        const myIdleType = `SELECT idleType_id, user_id, idle_MBTI, age_gap, smoking_idle, drinking_idle FROM idleType WHERE user_id = ?;`;
-        const [idleType]: any = await conn.query<RowDataPacket[]>(myIdleType, [user_id]);
-        const myIdleCompare = idleType[0];
+      // 내 이상형 테이블 불러오기
+      const myIdleType = `SELECT idleType_id, user_id, idle_MBTI, age_gap, smoking_idle, drinking_idle FROM idleType WHERE user_id = ?;`;
+      const [idleType]: any = await conn.query<RowDataPacket[]>(myIdleType, [user_id]);
+      const myIdleCompare = idleType[0];
 
-        // pool.query 대신 conn.query 사용
-        const [idleArray]:any = await conn.query<RowDataPacket[]>(findIdleQuery, [gender]);
-        console.log("Found users count:", idleArray.length);
+      // pool.query 대신 conn.query 사용
+      const [idleArray]:any = await conn.query<RowDataPacket[]>(findIdleQuery, [gender]);
+      console.log("Found users count:", idleArray.length);
 
-        if (idleArray.length === 0) {
-            return null; 
-        }
+      if (idleArray.length === 0) {
+          return null; 
+      }
 
-        let idle_UserId: number;
-        let idle_user: any;
-        let isDuplicate: boolean;
-        let attempts = 0;
-        const MAX_ATTEMPTS = 15; // 무한 루프 방지
+      let idle_UserId: number;
+      let idle_user: any;
+      let isDuplicate: boolean;
+      let isSameMajor: boolean;
+      let attempts = 0;
+      const MAX_ATTEMPTS = 15; // 무한 루프 방지
 
-        const chanceToReroll = await rerollCount(user_id, conn);
+      const chanceToReroll = await rerollCount(user_id, conn);
 
-        if(chanceToReroll > 0) {
-            do {
-                const index = makeRandomIndex(idleArray.length);
-                idle_user = idleArray[index];
-                idle_UserId = idle_user.user_id;
-    
-                isDuplicate = await duplicateUser(user_id, idle_UserId, conn);
-
-                const checkMajor = await avoidSameMajor(user_id, idle_UserId, conn);
-                
-                if(checkMajor) { // true라면 같은 전공이면 피해야함
-                    continue;
-                } 
-
-                attempts++;
-                if (attempts >= MAX_ATTEMPTS && isDuplicate) { // 더 이상 찾을 이상형이 없다면 기존 찾아진 회원에서 찾는 함수
-                    
-                    const duplicateUserResult = await findIdleTypeInTable(user_id, conn);
-                    
-                    if (duplicateUserResult && typeof duplicateUserResult === 'object' && 'findUser' in duplicateUserResult) {
-                        const duplicateUser = duplicateUserResult.findUser;
-                        const dupUserInfo = {
-                            user_id: duplicateUser.user_id,
-                            is_smoking: duplicateUser.is_smoking,
-                            is_drinking: duplicateUser.is_drinking,
-                            MBTI: duplicateUser.idle_MBTI,
-                            student_major: duplicateUser.idle_major,
-                            age: duplicateUser.idle_age
-                        };
-                        
-                        const idleScore = await scoreLatefunc(dupUserInfo, myIdleCompare, conn);
-                        
-                        return {
-                            findUser: duplicateUser,
-                            idleScore
-                        };
-                    }
-                    
-                    return duplicateUserResult;
-                }
-            } while (isDuplicate); 
-    
-            const foundUser: foundUser = {
-                user_id: idle_UserId,
-                is_smoking: idle_user.is_smoking,
-                is_drinking: idle_user.is_drinking,
-                idle_MBTI: idle_user.MBTI,
-                idle_major: idle_user.student_major,
-                instagram_id: idle_user.instagram_id,
-                idle_age: idle_user.age,
-            };
+      if(chanceToReroll > 0) {
+          do {
+              const index = makeRandomIndex(idleArray.length);
+              idle_user = idleArray[index];
+              idle_UserId = idle_user.user_id;
   
-            const idleScore = await scoreLatefunc(idle_user, myIdleCompare, conn);
-    
-            await addFoundUserTable(user_id, idle_UserId, conn);
-    
-            return { 
-                findUser: foundUser,
-                idleScore
-            };
-        } else {
-            return chanceToReroll; // 리롤 횟수를 모두 소진 시 그 수를 return
-        }
-    } catch (error) {
-        console.error("Error in reroll:", error);
-        throw error; 
-    }
+              isDuplicate = await duplicateUser(user_id, idle_UserId, conn);
+              isSameMajor = await avoidSameMajor(user_id, idle_UserId, conn);
+              
+              attempts++;
+              if (attempts >= MAX_ATTEMPTS && (isDuplicate || isSameMajor)) { // 최대 시도 후에도 중복이거나 같은 전공이면
+                  // 기존 찾아진 회원에서 찾는 함수
+                  const duplicateUserResult = await findIdleTypeInTable(user_id, conn);
+                  
+                  if (duplicateUserResult && typeof duplicateUserResult === 'object' && 'findUser' in duplicateUserResult) {
+                      const duplicateUser = duplicateUserResult.findUser;
+                      const dupUserInfo = {
+                          user_id: duplicateUser.user_id,
+                          is_smoking: duplicateUser.is_smoking,
+                          is_drinking: duplicateUser.is_drinking,
+                          MBTI: duplicateUser.idle_MBTI,
+                          student_major: duplicateUser.idle_major,
+                          age: duplicateUser.idle_age
+                      };
+                      
+                      // 중복 사용자의 전공도 체크
+                      /*
+                      const dupCheckMajor = await avoidSameMajor(user_id, dupUserInfo.user_id, conn);
+                      if(dupCheckMajor) {
+                          // 기존 테이블에서도 적합한 사용자가 없으면 null 반환
+                          return null;
+                      }
+                      */
+                      
+                      const idleScore = await scoreLatefunc(dupUserInfo, myIdleCompare, conn);
+                      
+                      return {
+                          findUser: duplicateUser,
+                          idleScore
+                      };
+                  }
+                  
+                  return duplicateUserResult;
+              }
+          } while (isDuplicate || isSameMajor); // 중복이거나 같은 전공이면 계속 반복
+  
+          const foundUser: foundUser = {
+              user_id: idle_UserId,
+              is_smoking: idle_user.is_smoking,
+              is_drinking: idle_user.is_drinking,
+              idle_MBTI: idle_user.MBTI,
+              idle_major: idle_user.student_major,
+              instagram_id: idle_user.instagram_id,
+              idle_age: idle_user.age,
+          };
+
+          const idleScore = await scoreLatefunc(idle_user, myIdleCompare, conn);
+  
+          await addFoundUserTable(user_id, idle_UserId, conn);
+  
+          return { 
+              findUser: foundUser,
+              idleScore
+          };
+      } else {
+          return chanceToReroll; // 리롤 횟수를 모두 소진 시 그 수를 return
+      }
+  } catch (error) {
+      console.error("Error in reroll:", error);
+      throw error; 
+  }
 };
 
 
