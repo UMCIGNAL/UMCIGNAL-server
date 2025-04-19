@@ -19,3 +19,8 @@
 
 ## Architecture & Flow chart
 ![KakaoTalk_20250408_165350522](https://github.com/user-attachments/assets/083fd146-31c4-4570-a4ae-affd90354e64)
+
+
+### TODO
+Error Code 통일화
+Error Code Interface화
