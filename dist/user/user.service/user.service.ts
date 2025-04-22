@@ -1,5 +1,5 @@
 import { generateCode, sendEmail } from "../../security/mail/mail.sender";
-import { changeUserInfoModel, mailVerifyModel, sendMailModel, userLogOutModel, userSignOutModel, userSignupModel } from "../user.model/user.model";
+import { changeUserInfoModel, getMyInstModel, mailVerifyModel, sendMailModel, userLogOutModel, userSignOutModel, userSignupModel } from "../user.model/user.model";
 import { userChangeInfoDTO, UserDto } from "../user.dto/user.dto";
 
 
@@ -54,3 +54,10 @@ export const changeUserInfoService = async (
 ): Promise<void> => {
     await changeUserInfoModel(user_id, userInfo);
 };
+
+export const getMyInstService = async (
+    user_id : number
+):Promise<String> => {
+    const result = await getMyInstModel (user_id);
+    return result;
+}

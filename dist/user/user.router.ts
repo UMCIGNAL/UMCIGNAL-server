@@ -1,5 +1,5 @@
 import express from 'express';
-import { changeUserInfoController, mailVerifyController, sendMailCodeController, userLogOutController, userSignOutController, userSignupController, userWhoCameBackController } from './user.controller/user.controller';
+import { changeUserInfoController, getMyInstController, mailVerifyController, sendMailCodeController, userLogOutController, userSignOutController, userSignupController, userWhoCameBackController } from './user.controller/user.controller';
 import { authenticateToken } from '../security/JWT/auth.jwt';
 
 const router = express.Router();
@@ -16,6 +16,7 @@ router.patch('/logOut', authenticateToken, userLogOutController); // 로그아�
 router.patch('/signOut', authenticateToken, userSignOutController); // 회원탈퇴 처리
 // router.patch('/comebackUser', userWhoCameBackController); // 탈퇴한 회원 복구 처리 -> 필요 없음 기존 /mailCode 사용 가능
 router.patch('/changeInfo', authenticateToken, changeUserInfoController); // 회원 정보 수정
+router.get('/getMyIns', authenticateToken, getMyInstController);
 
 /**
  * @swagger
@@ -474,4 +475,50 @@ router.patch('/changeInfo', authenticateToken, changeUserInfoController); // 회
  *                   example: "서버 오류가 발생했습니다."
  */
 
+
+/**
+ * @swagger
+ * /user/getMyIns:
+ *   get:
+ *     summary: "사용자의 인스턴스 정보를 가져옵니다."
+ *     description: "로그인된 사용자의 인스턴스 정보를 반환합니다."
+ *     tags:
+ *       - User
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: "인스턴스 정보 조회 성공"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 result:
+ *                   type: array
+ *                   description: "인스턴스 정보 배열"
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: wwnnss06
+ *       401:
+ *         description: "인증 실패"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       404:
+ *         description: "토큰 없음"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ */
 export default router;
