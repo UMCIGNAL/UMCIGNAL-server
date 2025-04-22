@@ -190,3 +190,17 @@ export const changeUserInfoModel = async (
         user_id
     ]);
 };
+
+export const getMyInstModel = async (
+    user_id : number
+):Promise<String> => {
+    const pool = await getPool();
+
+    const query = `SELECT instagram_id FROM user where user_id = ?`;
+
+    const [quert_result]:any = await pool.query(query, [user_id]);
+
+    const result = quert_result[0].instagram_id;
+
+    return result;
+};

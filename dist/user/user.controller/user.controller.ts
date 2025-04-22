@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { emailValidation, gmailValidation } from '../../security/validation/validation';
-import { changeUserInfoService, mailVerifyService, sendMailCodeService, userLogOutService, userSignOutService, userSignupService } from '../user.service/user.service';
+import { changeUserInfoService, getMyInstService, mailVerifyService, sendMailCodeService, userLogOutService, userSignOutService, userSignupService } from '../user.service/user.service';
 import { userChangeInfoDTO, UserDto } from '../user.dto/user.dto';
 import { decodeTokenUserId } from '../../security/JWT/auth.jwt';
 import { check_token, come_back_user } from '../../middlware/softDelete';
@@ -188,7 +188,6 @@ export const userSignOutController = async(
     }
 };
 
-
 export const userWhoCameBackController = async (
     req: Request,
     res: Response,
@@ -259,5 +258,36 @@ export const changeUserInfoController = async (
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+    }
+};
+
+export const getMyInstController = async (
+    req : Request,
+    res : Response,
+    next : NextFunction
+):Promise<any> => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+        const user_id = decodeTokenUserId(token) as number;
+
+        if(!token) {
+            return res.status(404).json({ message: '토큰이 없습니다.' });
+        }
+
+        if(user_id === null) {
+            return res.status(401).json({ message: '토큰이 유효하지 않습니다.' });
+        }
+
+        const check = await check_token(user_id);
+        
+
+        if(check === false) {
+            return res.status(401).json({ message: '로그인 되어있지 않습니다.' });
+        } else if(check === true) {
+            const result = await getMyInstService(user_id);
+            return res.status(200).json({ result });
+        }
+    }catch(error: any) {
+        next(error);
     }
 };
