@@ -22,6 +22,7 @@ export const insertCodeModel = async (
             const [comfirmation]:any = conn.query(check_query, [serialCode]);
 
             const checking = comfirmation[0].userAgeCheck;
+            
             console.log(checking);
 
             if(checking === 1) {

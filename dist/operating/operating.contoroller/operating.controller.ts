@@ -37,7 +37,7 @@ export const checkSignUpController = async (
                 result_idle = await checkIdleInsertService(user_id);
 
                 if(result_idle === false) {
-                    return res.status(401).json({ 
+                    return res.status(400).json({ 
                         signUpStatus: result_signUp, 
                         idleTypeStatus : result_idle,
                         message: '회원가입은 했지만 이상형 정보를 입력하지 않았습니다.' 
