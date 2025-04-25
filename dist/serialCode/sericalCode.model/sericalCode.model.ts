@@ -19,10 +19,10 @@ export const insertCodeModel = async (
         } else {
             const check_query = `SELECT userAgeCheck FROM serialCode WHERE code = ?;`;
 
-            const [comfirmation]:any = conn.query(check_query, [serialCode]);
+            const [comfirmation]:any = await conn.query(check_query, [serialCode]);
 
             const checking = comfirmation[0].userAgeCheck;
-            
+
             console.log(checking);
 
             if(checking === 1) {
