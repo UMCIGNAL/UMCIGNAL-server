@@ -37,8 +37,8 @@ router.get('/checkSignUp', authenticateToken, checkSignUpController);
  *                 message:
  *                   type: string
  *                   example: "토큰이 유효하지 않습니다."
- *       403:
- *         description: "회원가입을 하지 않았거나 이상형 정보를 입력하지 않음"
+ *       400:
+ *         description: "회원가입을 하지 않거나 이상형 정보를 넣지 않음"
  *         content:
  *           application/json:
  *             schema:
@@ -52,7 +52,7 @@ router.get('/checkSignUp', authenticateToken, checkSignUpController);
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: "회원가입은 했지만 이상형 정보를 입력하지 않았습니다."
+ *                   example: "회원가입을 하지 않거나 이상형 정보를 넣지 않음"
  *       404:
  *         description: "토큰이 없음"
  *         content:

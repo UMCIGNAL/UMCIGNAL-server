@@ -34,8 +34,8 @@ export const checkRefferalCode = async(
     const [checkMyReferralCode] : any = await pool.query(check_my_referralCode, [user_id]); // 내 referralCode 반환
     const [checkFriendReferralCode]: any = await pool.query(check_friend_referralCode, [referralCode]);   // 친구 user_id 반환    
 
-    const friend_id = checkFriendReferralCode[0].user_id;
-    const my_referralCode = checkMyReferralCode[0].referralCode;
+    const friend_id = checkFriendReferralCode[0].user_id; // 친구 추천인 코드
+    const my_referralCode = checkMyReferralCode[0].referralCode; // 내 추천인 코드
 
     if(my_referralCode === referralCode) {
         return false; // 내 추천 코드를 넣은 놈이기 때문
@@ -48,6 +48,7 @@ export const checkRefferalCode = async(
     if(friend_id === user_id) {
         return false; // 자기 자신의 추천 코드 넣었다는 얘기임
     }   
+    
     return true;
 };
 
