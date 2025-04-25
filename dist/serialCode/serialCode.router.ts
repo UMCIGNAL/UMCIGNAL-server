@@ -78,6 +78,16 @@ router.get('/myReroll', myRerollController);
  *                 message:
  *                   type: string
  *                   example: "로그인 되어있지 않습니다."
+ *       400:
+ *         description: "이미 사용한 코드드"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "이미 사용한 코드입니다."
  *       404:
  *         description: "토큰 또는 코드가 입력되지 않음, 존재하지 않는 코드"
  *         content:
