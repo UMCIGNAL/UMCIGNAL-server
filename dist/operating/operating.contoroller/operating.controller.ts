@@ -19,7 +19,7 @@ export const checkSignUpController = async (
         const user_id = decodeTokenUserId(token) as number;
     
         if(user_id === null) {
-            return res.status(401).json({ message : '토큰이 유효하지 않습니다. '});
+            return res.status(403).json({ message : '토큰이 유효하지 않습니다. '});
         }
     
         const check = await check_token(user_id);
@@ -32,12 +32,12 @@ export const checkSignUpController = async (
             result_idle = false;
 
             if(result_signUp === false) {
-                return res.status(403).json({ signUpStatus : result_signUp , idleTypeStatus : result_idle, message : '회원가입을 하지 않은 유저입니다.'});    
+                return res.status(400).json({ signUpStatus : result_signUp , idleTypeStatus : result_idle, message : '회원가입을 하지 않은 유저입니다.'});
             } else {
                 result_idle = await checkIdleInsertService(user_id);
 
                 if(result_idle === false) {
-                    return res.status(403).json({ 
+                    return res.status(401).json({ 
                         signUpStatus: result_signUp, 
                         idleTypeStatus : result_idle,
                         message: '회원가입은 했지만 이상형 정보를 입력하지 않았습니다.' 

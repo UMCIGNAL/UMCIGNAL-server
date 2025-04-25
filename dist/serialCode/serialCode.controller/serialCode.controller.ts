@@ -37,6 +37,10 @@ export const insertCodeController = async (
                 return res.status(404).json({ message : '존재하지 않는 코드입니다.' });
             }
 
+            if(result === 2) {
+                return res.status(400).json({ message : '이미 사용된 코드입니다.' });
+            }
+
             return res.status(202).json({ result, message : '코드가 정상적으로 추가되었습니다.' });
         }
 

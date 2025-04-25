@@ -14,22 +14,33 @@ export const insertCodeModel = async (
     
         const [result]:any = await conn.query(query, [serialCode]);
     
-        if(result.lenght === 0) {
+        if(!result[0]) {
             return 0;
         } else {
-            const change_query = `UPDATE serialCode SET userAgeCheck = 1 WHERE code = ?`;
-            await conn.query(change_query, [serialCode]);
+            const check_query = `SELECT userAgeCheck FROM serialCode WHERE code = ?;`;
 
-            const getQuery = `SELECT reroll FROM user WHERE user_id = ?`;
-            const [rerollCount]:any = await conn.query(getQuery, [user_id]);
+            const [comfirmation]:any = conn.query(check_query, [serialCode]);
 
-            const setQuery = 'UPDATE user SET reroll = ? WHERE user_id = ?';
-            
-            await conn.query(setQuery, [rerollCount[0].reroll +3, user_id]);
-            
-            await conn.commit();
+            const checking = comfirmation[0].userAgeCheck;
+            console.log(checking);
 
-            return 1;
+            if(checking === 1) {
+                return 2;
+            } else {
+                const change_query = `UPDATE serialCode SET userAgeCheck = 1 WHERE code = ?`;
+                await conn.query(change_query, [serialCode]);
+    
+                const getQuery = `SELECT reroll FROM user WHERE user_id = ?`;
+                const [rerollCount]:any = await conn.query(getQuery, [user_id]);
+    
+                const setQuery = 'UPDATE user SET reroll = ? WHERE user_id = ?';
+                
+                await conn.query(setQuery, [rerollCount[0].reroll +3, user_id]);
+                
+                await conn.commit();
+    
+                return 1;
+            }
         }
     } catch (error) {
         if (conn) {
@@ -41,8 +52,6 @@ export const insertCodeModel = async (
             conn.release();
         }
     }
-    
-
 };
 
 
