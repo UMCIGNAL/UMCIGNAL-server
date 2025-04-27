@@ -20,7 +20,7 @@ export const sendMailCodeController = async (
         }
 
         
-        if(mail.split('@')[0] === 'test') {
+        if(mail.split('@')[0] === 'test' || mail.split('@')[0] === 'testing') {
             return res.status(200).json({ message: '메일 전송 완료' });
         }
         
