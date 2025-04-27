@@ -70,6 +70,7 @@ export const findIdleUser = async (
       let idle_user: any;
       let isDuplicate: boolean;
       let isSameMajor: boolean;
+      let isSignUp: boolean;
       let attempts = 0;
       const MAX_ATTEMPTS = 15; // 무한 루프 방지
   
@@ -84,10 +85,11 @@ export const findIdleUser = async (
   
         isDuplicate = await duplicateUser(user_id, idle_UserId, conn);
         isSameMajor = await avoidSameMajor(user_id, idle_UserId, conn);
+        isSignUp = await checkSignUp(idle_UserId, conn);
         
         attempts++;
         
-      } while (isDuplicate || isSameMajor); 
+      } while (isDuplicate || isSameMajor || isSignUp); 
   
       const foundUser: foundUser = {
         user_id: idle_UserId,
@@ -181,6 +183,7 @@ export const reroll = async (
       let idle_user: any;
       let isDuplicate: boolean;
       let isSameMajor: boolean;
+      let isSignUp: boolean;
       let attempts = 0;
       const MAX_ATTEMPTS = 15; // 무한 루프 방지
 
@@ -194,9 +197,10 @@ export const reroll = async (
   
               isDuplicate = await duplicateUser(user_id, idle_UserId, conn);
               isSameMajor = await avoidSameMajor(user_id, idle_UserId, conn);
+              isSignUp = await checkSignUp(idle_UserId, conn);
               
               attempts++;
-              if (attempts >= MAX_ATTEMPTS && (isDuplicate || isSameMajor)) { // 최대 시도 후에도 중복이거나 같은 전공이면
+              if (attempts >= MAX_ATTEMPTS && (isDuplicate || isSameMajor || isSignUp)) { // 최대 시도 후에도 중복이거나 같은 전공이면
                   // 기존 찾아진 회원에서 찾는 함수
                   const duplicateUserResult = await findIdleTypeInTable(user_id, conn);
                   
@@ -230,7 +234,7 @@ export const reroll = async (
                   
                   return duplicateUserResult;
               }
-          } while (isDuplicate || isSameMajor); // 중복이거나 같은 전공이면 계속 반복
+          } while (isDuplicate || isSameMajor || isSignUp); // 중복이거나 같은 전공이면 계속 반복
   
           const foundUser: foundUser = {
               user_id: idle_UserId,
@@ -434,5 +438,25 @@ export const scoreLatefunc = async (
       } catch (error) {
         console.error("Error matching");
         return false;
+      }
+  };
+
+
+  const checkSignUp = async(
+    idle_user_id : number,
+    conn : PoolConnection
+  ):Promise<boolean> => {
+      const query = `SELECT signUpComplete FROM user WHERE user_id = ?;`;
+
+      const [useQuery] : any = await conn.query(query, [idle_user_id]);
+
+      const check = useQuery[0].signUpComplete;
+
+      console.log(check);
+
+      if(check === 1) { // 이미 입력한 것임
+        return false;
+      } else {
+        return true; // 입력 X
       }
   };
