@@ -9,7 +9,6 @@ export const generateToken = async (member: any): Promise<string> => {
         jwt.sign(
           {
             user_id: member.user_id,
-            student_id: member.student_id,
           },
           process.env.JWT_SECRET as string, // 환경변수에서 JWT_SECRET 가져오기 
           {
