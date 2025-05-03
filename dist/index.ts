@@ -13,6 +13,7 @@ import operatingRouter from './operating/operating.router';
 import serialCodeRouter from './serialCode/serialCode.router';
 import healthRouter from './healthCheck/health.router';
 import rootRouter from './aroot/root.router';
+import frontFuncRouter from './frontFunc/frontFunc.Router';
 
 const app = express();
 const router = express.Router();
@@ -38,6 +39,7 @@ app.use('/idleType', idleRouter);
 app.use('/operating', operatingRouter);
 app.use('/serialCode', serialCodeRouter);
 app.use('/health', healthRouter);
+app.use('/frontFunc', frontFuncRouter);
 
 app.use('/root', rootRouter);
 
