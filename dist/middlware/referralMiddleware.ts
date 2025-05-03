@@ -18,7 +18,7 @@ export const generateReferralCode = async (
 export const checkRefferalCode = async(
     user_id : number,
     referralCode : string
-):Promise<boolean> => {
+):Promise<number> => {
     const pool = await getPool();
 
     console.log(user_id, referralCode);
@@ -35,25 +35,25 @@ export const checkRefferalCode = async(
     const [checkFriendReferralCode]: any = await pool.query(check_friend_referralCode, [referralCode]);   // 친구 user_id 반환   
     
     if(!(checkFriendReferralCode.length > 0)) {
-        return false;
+        return 2; // 존재하지 않는 추천 코드
     }
 
     const friend_id = checkFriendReferralCode[0].user_id; // 친구 추천인 코드
     const my_referralCode = checkMyReferralCode[0].referralCode; // 내 추천인 코드
 
     if(my_referralCode === referralCode) {
-        return false; // 내 추천 코드를 넣은 놈이기 때문
+        return 3; // 내 추천 코드를 넣은 놈이기 때문
     }
 
     if(!friend_id) {
-        return false; // 존재하지 않는 추천 코드
+        return 2; // 존재하지 않는 추천 코드
     }
 
     if(friend_id === user_id) {
-        return false; // 자기 자신의 추천 코드 넣었다는 얘기임
+        return 3; // 자기 자신의 추천 코드 넣었다는 얘기임
     }   
     
-    return true;
+    return 1;
 };
 
 
