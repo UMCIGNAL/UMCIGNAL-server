@@ -12,8 +12,6 @@ export const findReferralModel = async(
     if(check === false) {
         return '추천 코드가 올바르지 않습니다.';
     } else { 
-        // 추천인 코드가 한번만 가능하다면 이 함수를 추가할 것
-             
         const duplicationCheck = await referralIndexCheck(user_id);
 
         if(duplicationCheck === false) {
