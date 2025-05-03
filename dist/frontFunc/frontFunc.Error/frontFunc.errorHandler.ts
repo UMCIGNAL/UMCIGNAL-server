@@ -16,8 +16,11 @@ export const frontError : Record<string, errorMessage> = {
     unAuthorized : { statusCode : 401, customCode : "EC401", message : "인증 오류, 토큰이 존재하지 않습니다." },
     forbidden : { statusCode : 403, customCode : "EC403", message : "만료된 토큰입니다." },
     notSignUp : { statusCode : 400, customCode : "EC400", message : "회원 정보를 입력하지 않은 유저입니다." },
+    missingField : { statusCode : 400, customCode : "EC404", message : "누락값이 존재합니다." },
+    signUpFaild : { statusCode : 400, customCode : "EC410", message : "회원가입에 실패하였습니다." },
 };
 
 export const frontSuccess : Record<string, successMessage> = {
+    operationSuccess : { statusCode : 200, customCode : "SS200", message : "정상적으로 회원가입이 완료된 유저입니다."},
     singUpSuccess : { statusCode : 200, customCode : "SS200", message : "정상적으로 회원가입이 완료된 유저입니다."},
 };

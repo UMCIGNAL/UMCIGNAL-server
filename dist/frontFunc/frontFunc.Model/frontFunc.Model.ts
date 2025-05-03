@@ -1,4 +1,6 @@
 import { getPool } from "../../config/database/mysqlConnect";
+import { generateReferralCode } from "../../middlware/referralMiddleware";
+import { userInfoFront } from "../frontFunc.DTO/frontFunc.DTO";
 
 export const operationFrontModel = async(
     user_id : number
@@ -15,4 +17,40 @@ export const operationFrontModel = async(
         return true;
     } 
     return false;
+};
+
+
+export const signUpModel = async (
+    user_id : number,
+    userInfo : userInfoFront
+): Promise<boolean> => {
+    const pool = await getPool();
+
+    try {
+        const referral_code = await generateReferralCode(user_id);
+    
+        const query = `UPDATE user
+                       SET gender = ?,
+                           student_major = ?,
+                           sameMajor = ?,
+                           instagram_id = ?,
+                           referralCode = ?,
+                           signUpComplete = ?
+                        WHERE user_id = ?
+                        `;
+    
+        const [run_query]:any = await pool.query(query, [
+            userInfo.gender, 
+            userInfo.major,
+            userInfo.sameMajor,
+            userInfo.instagram,
+            referral_code,
+            true,
+            userInfo
+        ]);
+
+        return true;
+    } catch {
+        return false;
+    }
 };

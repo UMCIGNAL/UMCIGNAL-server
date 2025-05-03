@@ -1,4 +1,5 @@
-import { operationFrontModel } from "../frontFunc.Model/frontFunc.Model";
+import { userInfoFront } from "../frontFunc.DTO/frontFunc.DTO";
+import { operationFrontModel, signUpModel } from "../frontFunc.Model/frontFunc.Model";
 
 
 export const operationFrontService = async(
@@ -8,3 +9,12 @@ export const operationFrontService = async(
 
     return result;
 };
+
+export const signUpService = async (
+    user_id : number,
+    userInfo : userInfoFront
+):Promise<boolean> => {
+    const result = await signUpModel(user_id, userInfo);
+
+    return result;
+}
