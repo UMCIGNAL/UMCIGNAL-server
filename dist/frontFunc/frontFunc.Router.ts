@@ -6,7 +6,7 @@ const router = Router();
 
 router.get('/operationFront', authenticateToken, operationFrontController);
 router.post('/signUpFront', authenticateToken, signUpController);
-router.get('frontReroll', authenticateToken, frontRerollController);
+router.get('/frontReroll', authenticateToken, frontRerollController);
 
 export default router;
 
@@ -30,9 +30,19 @@ export default router;
  *         customCode:
  *           type: string
  *           description: 커스텀 응답 코드
+ *         user_id:
+ *           type: integer
+ *           description: 사용자의 ID (선택적)
+ *         instagram_id:
+ *           type: string
+ *           description: 사용자의 Instagram ID (선택적)
  *         message:
  *           type: string
  *           description: 응답 메시지
+ *       required:
+ *         - statusCode
+ *         - customCode
+ *         - message
  *     errorMessage:
  *       type: object
  *       properties:
@@ -45,18 +55,22 @@ export default router;
  *         message:
  *           type: string
  *           description: 에러 메시지
+ *       required:
+ *         - statusCode
+ *         - customCode
+ *         - message
  */
 
 
 /**
  * @swagger
- * /operationFront:
+ * /frontFunc/operationFront:
  *   get:
  *     summary: 회원가입 상태 확인 API
  *     description: 사용자의 토큰을 확인하여 회원가입 상태를 반환합니다.
- *     tags: aFront-new
+ *     tags: [aFront-new]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: 정상적으로 회원가입이 완료된 유저입니다.
@@ -96,9 +110,9 @@ export default router;
  *   post:
  *     summary: 사용자 회원가입 API
  *     description: 사용자의 회원가입 정보를 받아 회원가입을 처리합니다.
- *     tags: aFront-new
+ *     tags: [aFront-new]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -155,9 +169,9 @@ export default router;
  *   get:
  *     summary: 리롤 결과 조회 API
  *     description: 사용자의 리롤 결과를 확인하고, Instagram ID를 반환합니다.
- *     tags: aFront-new
+ *     tags: [aFront-new]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: 리롤이 성공적으로 완료되었습니다. Instagram ID를 포함한 결과.

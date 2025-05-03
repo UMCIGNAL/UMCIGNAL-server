@@ -1,6 +1,6 @@
 export interface userInfoFront {
     gender : String;
-    instagram : String;
+    instagram_id : String;
 };
 
 export interface idealInfo {

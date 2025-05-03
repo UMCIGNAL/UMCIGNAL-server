@@ -41,14 +41,15 @@ export const signUpModel = async (
     
         const [run_query]:any = await pool.query(query, [
             userInfo.gender, 
-            userInfo.instagram,
+            userInfo.instagram_id,
             referral_code,
             true,
-            userInfo
+            user_id
         ]);
 
         return true;
-    } catch {
+    } catch (error : any) {
+        console.log(error);
         return false;
     }
 };
@@ -63,8 +64,11 @@ export const frontRerollModel = async (
         await conn.beginTransaction();
 
         const gender = await defineGender(user_id, conn);
+        console.log(gender);
+
 
         const result = await frontReroll(gender, user_id, conn);
+        console.log(result);
 
         if (!result && result !== 0) {
             await conn.rollback();

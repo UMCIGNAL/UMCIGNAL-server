@@ -63,7 +63,7 @@ export const signUpController = async (
 
         const missingFields: string[] = [];
         if(!userInfo.gender) missingFields.push("gender");
-        if(!userInfo.instagram) missingFields.push("instagram_id");
+        if(!userInfo.instagram_id) missingFields.push("instagram_id");
 
         if(missingFields.length > 0) {
             res.status(frontError.missingField.statusCode).json(frontError.missingField);
@@ -77,7 +77,7 @@ export const signUpController = async (
             return;
         }
         
-        res.status(frontSuccess.singUpSuccess.statusCode).json(frontSuccess.signUpComplete);
+        res.status(frontSuccess.singUpSuccess.statusCode).json(frontSuccess.singUpSuccess);
         return;
     } catch (error : any) {
         res.status(frontError.serverError.statusCode).json(frontError.serverError);
