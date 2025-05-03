@@ -1,6 +1,8 @@
 import { getPool } from "../../config/database/mysqlConnect";
+import { frontReroll } from "../../middlware/frontFunc.middleware";
+import { defineGender } from "../../middlware/idleType.middleware";
 import { generateReferralCode } from "../../middlware/referralMiddleware";
-import { userInfoFront } from "../frontFunc.DTO/frontFunc.DTO";
+import { idealInfo, userInfoFront } from "../frontFunc.DTO/frontFunc.DTO";
 
 export const operationFrontModel = async(
     user_id : number
@@ -31,8 +33,6 @@ export const signUpModel = async (
     
         const query = `UPDATE user
                        SET gender = ?,
-                           student_major = ?,
-                           sameMajor = ?,
                            instagram_id = ?,
                            referralCode = ?,
                            signUpComplete = ?
@@ -41,8 +41,6 @@ export const signUpModel = async (
     
         const [run_query]:any = await pool.query(query, [
             userInfo.gender, 
-            userInfo.major,
-            userInfo.sameMajor,
             userInfo.instagram,
             referral_code,
             true,
@@ -51,6 +49,35 @@ export const signUpModel = async (
 
         return true;
     } catch {
+        return false;
+    }
+};
+
+export const frontRerollModel = async (
+    user_id : number
+):Promise<{findUser: idealInfo} | boolean | null | number> => {
+    const pool = await getPool();
+    const conn = await pool.getConnection();
+
+    try {
+        await conn.beginTransaction();
+
+        const gender = await defineGender(user_id, conn);
+
+        const result = await frontReroll(gender, user_id, conn);
+
+        if (!result && result !== 0) {
+            await conn.rollback();
+            return null;        
+        } else if(result === 0) {
+            await conn.rollback();
+            return 0;
+        }
+
+        await conn.commit();
+
+        return result;
+    }catch (error) {
         return false;
     }
 };

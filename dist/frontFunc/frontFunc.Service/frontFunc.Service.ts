@@ -1,5 +1,5 @@
-import { userInfoFront } from "../frontFunc.DTO/frontFunc.DTO";
-import { operationFrontModel, signUpModel } from "../frontFunc.Model/frontFunc.Model";
+import { idealInfo, userInfoFront } from "../frontFunc.DTO/frontFunc.DTO";
+import { frontRerollModel, operationFrontModel, signUpModel } from "../frontFunc.Model/frontFunc.Model";
 
 
 export const operationFrontService = async(
@@ -17,4 +17,12 @@ export const signUpService = async (
     const result = await signUpModel(user_id, userInfo);
 
     return result;
-}
+};
+
+export const frontRerollSerivce = async (
+    user_id : number
+):Promise<{findUser : idealInfo} | boolean | null | number> => {
+    const result = await frontRerollModel(user_id);
+
+    return result;
+};

@@ -1,6 +1,8 @@
 export interface userInfoFront {
     gender : String;
-    major : String;
     instagram : String;
-    sameMajor : boolean;
-}
+};
+
+export interface idealInfo {
+    instagram_id : String;
+};
