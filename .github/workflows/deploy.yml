@@ -107,7 +107,7 @@ jobs:
               pkill node
               sleep 5
             fi
-            nohup npm run dev > app.log 2> app.error.log &
+            nohup npm run dev > /home/ubuntu/UMCIGNAL-server/app.log 2> /home/ubuntu/UMCIGNAL-server/app.error.log &
           '
 
       - name: Check if Application is Running
@@ -118,7 +118,11 @@ jobs:
               echo "✅ Application is running."
             else
               echo "❌ Application failed to start."
-              cat app.error.log
+              if [ -f /home/ubuntu/UMCIGNAL-server/app.error.log ]; then
+                cat /home/ubuntu/UMCIGNAL-server/app.error.log
+              else
+                echo "No error log found."
+              fi
               exit 1
             fi
           '
