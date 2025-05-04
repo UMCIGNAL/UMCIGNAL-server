@@ -114,7 +114,7 @@ jobs:
           ssh playground-umc-7th '
             cd /home/ubuntu/UMCIGNAL-server
             if pgrep node; then
-              pkill node
+              pm2 stop umcignal-server || echo "No process found to stop"
               sleep 5
             fi
             pm2 start npm --name "umcignal-server" -- run dev || (echo "❌ pm2 failed to start the app"; exit 1)
