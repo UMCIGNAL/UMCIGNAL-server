@@ -117,7 +117,7 @@ jobs:
               pkill node
               sleep 5
             fi
-            pm2 start npm --name "umcignal-server" -- run dev
+            pm2 start npm --name "umcignal-server" -- run dev || (echo "❌ pm2 failed to start the app"; exit 1)
           '
 
       - name: Check if Application is Running with pm2
