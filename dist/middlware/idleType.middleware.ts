@@ -442,7 +442,7 @@ export const scoreLatefunc = async (
   };
 
 
-  const checkSignUp = async(
+ const checkSignUp = async(
     idle_user_id : number,
     conn : PoolConnection
   ):Promise<boolean> => {

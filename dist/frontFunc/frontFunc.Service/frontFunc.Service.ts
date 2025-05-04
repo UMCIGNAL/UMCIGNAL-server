@@ -22,7 +22,9 @@ export const signUpService = async (
 export const frontRerollSerivce = async (
     user_id : number
 ):Promise<{findUser : idealInfo} | boolean | null | number> => {
+    console.log("Reroll Service");
     const result = await frontRerollModel(user_id);
 
+    console.log("Return Reroll Service");
     return result;
 };
