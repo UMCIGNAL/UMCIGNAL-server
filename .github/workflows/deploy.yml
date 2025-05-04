@@ -99,6 +99,16 @@ jobs:
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             EOF'
 
+      - name: Fix npm permissions and install pm2
+        run: |
+          ssh playground-umc-7th '
+            mkdir -p ~/.npm-global
+            npm config set prefix ~/.npm-global
+            echo "export PATH=$PATH:~/.npm-global/bin" >> ~/.bashrc
+            source ~/.bashrc
+            npm install -g pm2
+          '
+
       - name: Restart Application with pm2
         run: |
           ssh playground-umc-7th '
@@ -107,7 +117,6 @@ jobs:
               pkill node
               sleep 5
             fi
-            npm install -g pm2
             pm2 start npm --name "umcignal-server" -- run dev
           '
 
