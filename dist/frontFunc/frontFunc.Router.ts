@@ -73,35 +73,55 @@ export default router;
  *       - BearerAuth: []
  *     responses:
  *       200:
- *         description: 정상적으로 회원가입이 완료된 유저입니다.
+ *         description: "회원가입 완료된 유저"
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/successMessage'
- *       400:
- *         description: 회원 정보가 존재하지 않는 유저입니다.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/errorMessage'
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "정상적으로 회원가입이 완료된 유저입니다."
  *       401:
- *         description: 인증 오류, 토큰이 존재하지 않습니다.
+ *         description: "토큰이 유효하지 않음"
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/errorMessage'
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "인증 오류, 토큰이 존재하지 않습니다."
  *       403:
- *         description: 만료된 토큰입니다.
+ *         description: "만료된 토큰"
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/errorMessage'
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "만료된 토큰입니다."
+ *       400:
+ *         description: "회원가입을 하지 않은 유저"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "회원 정보를 입력하지 않은 유저입니다."
  *       500:
- *         description: 서버 에러입니다.
+ *         description: "서버 오류 발생"
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/errorMessage'
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "서버 에러입니다."
  */
 
 /**
@@ -131,35 +151,55 @@ export default router;
  *               - instagram_id
  *     responses:
  *       200:
- *         description: 회원가입이 성공적으로 완료된 유저입니다.
+ *         description: "회원가입 성공"
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/successMessage'
- *       400:
- *         description: 회원 가입 실패 또는 누락된 필드가 존재하는 경우
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/errorMessage'
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "정상적으로 회원가입이 완료된 유저입니다."
  *       401:
- *         description: 인증 오류, 토큰이 존재하지 않음
+ *         description: "토큰이 유효하지 않음"
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/errorMessage'
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "인증 오류, 토큰이 존재하지 않습니다."
  *       403:
- *         description: 만료된 토큰입니다.
+ *         description: "만료된 토큰"
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/errorMessage'
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "만료된 토큰입니다."
+ *       400:
+ *         description: "누락된 필드 존재"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "누락값이 존재합니다."
  *       500:
- *         description: 서버 에러입니다.
+ *         description: "서버 오류 발생"
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/errorMessage'
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "서버 에러입니다."
  */
 
 
@@ -174,46 +214,66 @@ export default router;
  *       - BearerAuth: []
  *     responses:
  *       200:
- *         description: 리롤이 성공적으로 완료되었습니다. Instagram ID를 포함한 결과.
+ *         description: "리롤 성공"
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 statusCode:
- *                   type: integer
- *                   description: HTTP 상태 코드
- *                 customCode:
- *                   type: string
- *                   description: 커스텀 응답 코드
  *                 message:
  *                   type: string
- *                   description: 응답 메시지
+ *                   example: "매칭이 완료되었습니다."
  *                 instagram_id:
  *                   type: string
- *                   description: 사용자 Instagram ID
- *       400:
- *         description: 리롤 횟수를 모두 소진했거나 이상형을 찾지 못한 경우
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/errorMessage'
+ *                   example: "user_instagram_id"
  *       401:
- *         description: 인증 오류, 토큰이 존재하지 않음
+ *         description: "토큰이 유효하지 않음"
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/errorMessage'
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "인증 오류, 토큰이 존재하지 않습니다."
  *       403:
- *         description: 만료된 토큰입니다.
+ *         description: "만료된 토큰"
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/errorMessage'
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "만료된 토큰입니다."
+ *       400:
+ *         description: "리롤 횟수 초과"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "리롤 횟수를 모두 소진하였습니다."
+ *       404:
+ *         description: "이상형 정보 없음"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "이상형을 찾지 못 했습니다."
  *       500:
- *         description: 서버 에러입니다.
+ *         description: "서버 오류 발생"
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/errorMessage'
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "서버 에러입니다."
  */

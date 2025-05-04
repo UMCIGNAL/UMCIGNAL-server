@@ -57,16 +57,18 @@ export const signUpModel = async (
 export const frontRerollModel = async (
     user_id : number
 ):Promise<{findUser: idealInfo} | boolean | null | number> => {
+    console.log("Reroll Model");
     const pool = await getPool();
     const conn = await pool.getConnection();
 
     try {
         await conn.beginTransaction();
 
+        console.log("front Reroll Model gender");
         const gender = await defineGender(user_id, conn);
         console.log(gender);
 
-
+        console.log("front Reroll Model frontReroll func");
         const result = await frontReroll(gender, user_id, conn);
         console.log(result);
 

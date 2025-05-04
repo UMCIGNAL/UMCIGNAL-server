@@ -105,6 +105,7 @@ export const frontRerollController = async (
             return;
         }
 
+        console.log("Reroll Controller");
         const result = await frontRerollSerivce(user_id);
 
         if(result === 0) {
@@ -117,6 +118,7 @@ export const frontRerollController = async (
 
         const instagram_id = (result as {findUser: idealInfo}).findUser.instagram_id;
 
+        console.log("Return Reroll Controller");
         res.status(frontSuccess.matchSuccess.statusCode).json({
             ...frontSuccess.matchSuccess,
             instagram_id: instagram_id

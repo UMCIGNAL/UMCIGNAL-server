@@ -9,11 +9,11 @@ export const findReferralModel = async(
 
     const check = await checkRefferalCode(user_id, referralCode);
 
-    if(check === false) {
-        return '추천 코드가 올바르지 않습니다.';
+    if(check === 2) {
+        return '존재하지 않는 추천인 코드입니다.';
+    } else if (check === 3) {
+        return '자기 자신의 추천인 코드입니다.';
     } else { 
-        // 추천인 코드가 한번만 가능하다면 이 함수를 추가할 것
-             
         const duplicationCheck = await referralIndexCheck(user_id);
 
         if(duplicationCheck === false) {
