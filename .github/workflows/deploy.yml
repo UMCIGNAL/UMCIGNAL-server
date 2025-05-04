@@ -75,7 +75,7 @@ jobs:
         run: |
           ssh playground-umc-7th '
             cd /home/ubuntu/UMCIGNAL-server
-            npm ci  # clean install, 기존 node_modules는 삭제하고 다시 설치
+            npm install
           '
 
       - name: Create or Update .env file
@@ -99,36 +99,26 @@ jobs:
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             EOF'
 
-      - name: Fix npm permissions and install pm2
-        run: |
-          ssh playground-umc-7th '
-            mkdir -p ~/.npm-global
-            npm config set prefix ~/.npm-global
-            echo "export PATH=$PATH:~/.npm-global/bin" >> ~/.bashrc
-            source ~/.bashrc
-            npm install -g pm2
-          '
-
-      - name: Restart Application with pm2
+      - name: Restart Application
         run: |
           ssh playground-umc-7th '
             cd /home/ubuntu/UMCIGNAL-server
             if pgrep node; then
-              pm2 stop umcignal-server || echo "No process found to stop"
+              pkill node
               sleep 5
             fi
-            pm2 start npm --name "umcignal-server" -- run dev || (echo "❌ pm2 failed to start the app"; exit 1)
+            nohup npm run dev > app.log 2> app.error.log &
           '
 
-      - name: Check if Application is Running with pm2
+      - name: Check if Application is Running
         run: |
           ssh playground-umc-7th '
             sleep 10
-            if pm2 list | grep "umcignal-server" | grep -q "online"; then
+            if pgrep -x "node" > /dev/null; then
               echo "✅ Application is running."
             else
               echo "❌ Application failed to start."
-              pm2 logs umcignal-server
+              cat app.error.log
               exit 1
             fi
           '
