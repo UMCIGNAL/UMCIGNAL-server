@@ -21,28 +21,28 @@ export const checkUser = async (
 
 
 
-// 회원탈퇴를 위한 함수
-export const softDelete = async (
-    user_id : number
-): Promise<boolean> => {
-    const pool = await getPool();
+// // 회원탈퇴를 위한 함수
+// export const softDelete = async (
+//     user_id : number
+// ): Promise<boolean> => {
+//     const pool = await getPool();
 
-    console.log('user_id:', user_id);
+//     console.log('user_id:', user_id);
     
-    const query = `
-        SELECT deleted_at FROM user WHERE user_id = ?
-    `;
+//     const query = `
+//         SELECT deleted_at FROM user WHERE user_id = ?
+//     `;
 
-    const result = await pool.query(query, [user_id]);
+//     const result = await pool.query(query, [user_id]);
 
-    // deleted_at이 null인 경우 아직 회원탈퇴를 하지 않은 회원임
-    if(result[0] === null) {
-        return false;
-    }
+//     // deleted_at이 null인 경우 아직 회원탈퇴를 하지 않은 회원임
+//     if(result[0] === null) {
+//         return false;
+//     }
 
-    //만약 회원탈퇴한 회원인 경우
-    return true;
-};
+//     //만약 회원탈퇴한 회원인 경우
+//     return true;
+// };
 
 
 // signOut을 위한 함수
