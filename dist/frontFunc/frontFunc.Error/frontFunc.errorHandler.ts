@@ -20,7 +20,8 @@ export const frontError : Record<string, errorMessage> = {
     missingField : { statusCode : 400, customCode : "EC404", message : "누락값이 존재합니다." },
     signUpFaild : { statusCode : 400, customCode : "EC410", message : "회원가입에 실패하였습니다." },
     rerollCount : { statusCode : 400, customCode : "EC411", message : "리롤 횟수를 모두 소진하였습니다."},
-    notFoundIdeal : {statusCode : 400, customCode : "EC412", message : "이상형을 찾지 못 했습니다."}
+    notFoundIdeal : {statusCode : 400, customCode : "EC412", message : "이상형을 찾지 못 했습니다."},
+    alreadySignUp : {statusCode : 400, customCode : "EC413", message : "이미 회원가입을 한 유저입니다."}
 };
 
 export const frontSuccess : Record<string, successMessage> = {
