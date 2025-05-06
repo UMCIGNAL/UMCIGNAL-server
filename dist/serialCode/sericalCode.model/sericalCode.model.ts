@@ -36,7 +36,7 @@ export const insertCodeModel = async (
     
                 const setQuery = 'UPDATE user SET reroll = ? WHERE user_id = ?';
                 
-                await conn.query(setQuery, [rerollCount[0].reroll +3, user_id]);
+                await conn.query(setQuery, [rerollCount[0].reroll +2, user_id]);
                 
                 await conn.commit();
     

@@ -68,13 +68,13 @@ export const increaseReferralCount = async(
     const friend_id = index_check[0].user_id;
 
     const query_increase_friend = `UPDATE user
-                                   SET reroll = reroll + 3 
+                                   SET reroll = reroll + 1 
                                    WHERE user_id = ?`;
 
     await pool.query(query_increase_friend, [friend_id]);
 
     const query_increase_me = `UPDATE user
-                               SET reroll = reroll + 2
+                               SET reroll = reroll + 1
                                WHERE user_id = ?`;
                                        
     await pool.query(query_increase_me, [user_id]);
