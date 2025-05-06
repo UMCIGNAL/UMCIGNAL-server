@@ -57,7 +57,7 @@ export const myRerollController = async (
     try {
         const token = req.headers.authorization?.split(' ')[1];
 
-        if(!token) {
+        if(!token || token === undefined) {
             return res.status(404).json({ message: '토큰이 없습니다.' });
         }
         const user_id = decodeTokenUserId(token) as number;
