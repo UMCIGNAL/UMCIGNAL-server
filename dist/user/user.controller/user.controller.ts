@@ -288,6 +288,7 @@ export const getMyInstController = async (
             return res.status(200).json({ result });
         }
     }catch(error: any) {
-        next(error);
+        console.error(error);
+        return res.status(500).json({ message: '서버 오류가 발생했습니다.' });
     }
 };
