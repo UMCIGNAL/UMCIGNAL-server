@@ -30,7 +30,16 @@ export const signUpModel = async (
 
     try {
         const referral_code = await generateReferralCode(user_id);
-    
+
+        const current_ins_id = userInfo.instagram_id;
+
+        const check_At = current_ins_id.substring(0,1);
+
+        if(check_At === '@') {
+            userInfo.instagram_id = current_ins_id.substring(1, current_ins_id.length);
+        }
+
+
         const query = `UPDATE user
                        SET gender = ?,
                            instagram_id = ?,
