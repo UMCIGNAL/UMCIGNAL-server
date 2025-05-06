@@ -153,9 +153,11 @@ const checkSignUp = async(
 
      const [queryRun]:any = await pool.query(query, [user_id]);
 
+     const result = queryRun[0].signUpComplete;
+
      console.log("check Signup result : ", queryRun);
 
-    if(queryRun.length > 0) {
+    if(result === 1) { 
         console.log("check Signup result : ", true);
         return true;
     }
