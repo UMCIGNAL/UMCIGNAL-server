@@ -10,7 +10,7 @@ export const frontReroll = async (
 ): Promise<{ findUser: idealInfo } | number | null> => {
     try {
         const findIdleQuery = `
-            SELECT instagram_id
+            SELECT instagram_id, user_id
             FROM user
             WHERE gender = ?;
         `;
@@ -20,7 +20,7 @@ export const frontReroll = async (
         console.log("Found users count:", idleArray.length);
 
         if (idleArray.length === 0) {
-            return null; 
+            return null;
         }
 
         let idle_user: any;

@@ -148,6 +148,7 @@ export const addFoundUserTable = async (
     VALUES (?, ?);
      `;
 
+     
     await conn.query<ResultSetHeader>(query, [my_id, idle_id]);
 };
 
