@@ -2,6 +2,7 @@ import { idealInfo } from "../frontFunc/frontFunc.DTO/frontFunc.DTO";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { addFoundUserTable, duplicateUser, findIdleTypeInTable, makeRandomIndex, rerollCount } from "./idleType.middleware";
 import { PoolConnection } from "mysql2/promise";
+import { getPool } from "../config/database/mysqlConnect";
 
 export const frontReroll = async (
     gender: String,
@@ -140,4 +141,24 @@ const checkSignUp = async(
         console.error("Error in checkSignUp:", error.message || error);
         throw error;
     }
+  };
+
+
+  export const checkSignUpMiddleWare = async (
+    user_id : number
+  ):Promise<boolean> => {
+     const pool = await getPool();
+
+     const query = `SELECT signUpComplete FROM user WHERE user_id = ?;`;
+
+     const [queryRun]:any = await pool.query(query, [user_id]);
+
+     console.log("check Signup result : ", queryRun);
+
+    if(queryRun.length > 0) {
+        console.log("check Signup result : ", true);
+        return true;
+    }
+    console.log("check Signup result : ", false);
+    return false;
   };

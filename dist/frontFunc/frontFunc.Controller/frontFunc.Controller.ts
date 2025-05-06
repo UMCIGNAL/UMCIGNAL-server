@@ -3,6 +3,7 @@ import { errorMessage, frontError, frontSuccess, successMessage } from "../front
 import { decodeTokenUserId } from "../../security/JWT/auth.jwt";
 import { frontRerollSerivce, operationFrontService, signUpService } from "../frontFunc.Service/frontFunc.Service";
 import { idealInfo, userInfoFront } from "../frontFunc.DTO/frontFunc.DTO";
+import { checkSignUpMiddleWare } from "../../middlware/frontFunc.middleware";
 
 export const operationFrontController = async (
     req: Request,
@@ -59,25 +60,32 @@ export const signUpController = async (
             return;
         }
 
-        const userInfo : userInfoFront = req.body;
+        const check_signUp = await checkSignUpMiddleWare(user_id);
 
-        const missingFields: string[] = [];
-        if(!userInfo.gender) missingFields.push("gender");
-        if(!userInfo.instagram_id) missingFields.push("instagram_id");
-
-        if(missingFields.length > 0) {
-            res.status(frontError.missingField.statusCode).json(frontError.missingField);
+        if(!check_signUp) {
+            const userInfo : userInfoFront = req.body;
+    
+            const missingFields: string[] = [];
+            if(!userInfo.gender) missingFields.push("gender");
+            if(!userInfo.instagram_id) missingFields.push("instagram_id");
+    
+            if(missingFields.length > 0) {
+                res.status(frontError.missingField.statusCode).json(frontError.missingField);
+                return;
+            }
+    
+            const result = await signUpService(user_id, userInfo);
+    
+            if(!result) {
+                res.status(frontError.signUpFaild.statusCode).json(frontError.signUpFaild);
+                return;
+            }
+            
+            res.status(frontSuccess.singUpSuccess.statusCode).json(frontSuccess.singUpSuccess);
             return;
         }
 
-        const result = await signUpService(user_id, userInfo);
-
-        if(!result) {
-            res.status(frontError.signUpFaild.statusCode).json(frontError.signUpFaild);
-            return;
-        }
-        
-        res.status(frontSuccess.singUpSuccess.statusCode).json(frontSuccess.singUpSuccess);
+        res.status(frontError.alreadySignUp.statusCode).json(frontError.alreadySignUp);
         return;
     } catch (error : any) {
         res.status(frontError.serverError.statusCode).json(frontError.serverError);
