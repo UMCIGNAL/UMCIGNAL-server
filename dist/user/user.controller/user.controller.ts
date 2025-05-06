@@ -15,7 +15,7 @@ export const sendMailCodeController = async (
         const mail = req.body.mail as string;
 
         // 상명대 이메일 형식 검증 && gmail 이메일 형식 검증
-        if(!emailValidation(mail) && !gmailValidation(mail)) {
+        if(!emailValidation(mail)) {
            return res.status(403).json({ message: '이메일 형식이 올바르지 않습니다.' });
         }
 
