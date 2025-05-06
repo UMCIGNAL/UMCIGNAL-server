@@ -61,24 +61,31 @@ export const check_jwt = async (
 };
 
 // Token 비교 함수
-export const check_token = async (
-    user_id : number
-): Promise<boolean> => {
+export const check_token = async (user_id: number): Promise<boolean> => {
     const pool = await getPool();
 
     const query = `
         SELECT Token FROM user WHERE user_id = ?;
     `;
 
-    const [result]:any = await pool.query(query, [user_id]);
+    const [result]: any = await pool.query(query, [user_id]);
 
-    // 없다면 회원탈퇴 또는 로그아웃한 유저
-    if(result[0].Token === 'notExsistToken' || result[0].Token === null) {
+    if (!result || !result[0]) {
+        // user_id에 해당하는 유저가 아예 없을 경우
         return false;
     }
-    // 로그인 한 유저
+
+    const tokenInDB = result[0].Token;
+
+    // 회원탈퇴 또는 로그아웃한 유저
+    if (tokenInDB === 'notExsistToken' || tokenInDB === null) {
+        return false;
+    }
+
+    // 로그인 된 유저
     return true;
 };
+
 
 
 export const come_back_user = async (
