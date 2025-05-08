@@ -25,7 +25,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/swagger-api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 router.get('/', (req, res) => {
     res.json('Wellcome UMCignal');
