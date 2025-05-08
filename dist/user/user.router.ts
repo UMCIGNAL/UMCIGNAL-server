@@ -1,5 +1,5 @@
 import express from 'express';
-import { changeUserInfoController, getMyInstController, mailVerifyController, sendMailCodeController, userLogOutController, userSignOutController, userSignupController, userWhoCameBackController } from './user.controller/user.controller';
+import { changeUserInfoController, getMyInstController, mailVerifyController, mailVerifyStudentIdController, sendMailCodeController, userLogOutController, userSignOutController, userSignupController, userWhoCameBackController } from './user.controller/user.controller';
 import { authenticateToken } from '../security/JWT/auth.jwt';
 
 const router = express.Router();
@@ -10,6 +10,7 @@ router.get('/', (req, res) => {
 
 router.post('/mailCode', sendMailCodeController); // 처음 로그인 시 사용 또는 다시 로그인 시도 시 사용
 router.post('/verify', mailVerifyController);   // 인증 코드 검증 및 토큰 발급
+router.post('/verifyStudentId', mailVerifyStudentIdController);   // 인증 코드 검증 및 토큰 발급
 router.patch('/signup', authenticateToken, userSignupController); // 이미 가입한 회원 초기 정보 입력 
 
 router.patch('/logOut', authenticateToken, userLogOutController); // 로그아웃 처리
@@ -521,4 +522,88 @@ router.get('/getMyIns', authenticateToken, getMyInstController);
  *                 message:
  *                   type: string
  */
+
+
+/**
+ * @swagger
+ * /user/verifyStudentId:
+ *   post:
+ *     summary: 학생 메일 인증 코드 검증 및 토큰 발급
+ *     description: 클라이언트에서 받은 인증 코드와 학번을 검증하여 성공 시 토큰을 발급합니다.
+ *     tags:
+ *       - user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - mailVerification
+ *               - student_id
+ *             properties:
+ *               mailVerification:
+ *                 type: string
+ *                 example: "123456"
+ *                 description: 인증 메일로 받은 6자리 코드
+ *               student_id:
+ *                 type: string
+ *                 example: "202312345"
+ *                 description: 사용자의 학번
+ *     responses:
+ *       200:
+ *         description: 인증 성공 및 토큰 발급
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "메일 인증 완료"
+ *                 token:
+ *                   type: string
+ *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *       401:
+ *         description: 인증 코드 또는 학번 누락
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "인증 코드가 제공되지 않았습니다."
+ *       403:
+ *         description: 잘못된 인증 코드
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "인증 코드가 올바르지 않습니다. 다시 인증해주세요."
+ *       408:
+ *         description: 인증 코드가 6자리가 아님
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "인증 코드는 6자리입니다."
+ *       500:
+ *         description: 서버 내부 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "서버 오류가 발생했습니다."
+ */
+
 export default router;

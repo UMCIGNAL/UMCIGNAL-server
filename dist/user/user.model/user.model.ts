@@ -204,3 +204,40 @@ export const getMyInstModel = async (
 
     return result;
 };
+
+
+export const mailVerifyStudentIdModel = async (
+    student_id : string,
+    mailVerification: string
+): Promise<string | null> => {
+    const pool = await getPool();
+
+    try {
+        const query = `SELECT * FROM user WHERE student_id = ? AND valid_key = ?`;
+    
+        const [result]: any = await pool.query(query, [student_id, mailVerification]);
+
+        if (result.length === 0) {
+            return null; // 유효한 인증 코드가 없는 경우
+        }
+    
+        const token = await generateToken(result[0]); // JWT 토큰 생성
+    
+        if (!token) {
+            console.error('Token generation failed');
+            return null;
+        }
+    
+        console.log('Token generated:', token);
+    
+        const updateQuery = `UPDATE user SET Token = ? WHERE user_id = ?`;
+    
+        // 토큰 값과 user_id가 정확하게 들어왔는지 확인
+        await pool.query(updateQuery, [token, result[0].user_id]);
+    
+        return token;
+    } catch (error) {
+        return null;
+    }
+
+};
