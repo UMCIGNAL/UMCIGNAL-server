@@ -1,5 +1,5 @@
 import { generateCode, sendEmail } from "../../security/mail/mail.sender";
-import { changeUserInfoModel, getMyInstModel, mailVerifyModel, sendMailModel, userLogOutModel, userSignOutModel, userSignupModel } from "../user.model/user.model";
+import { changeUserInfoModel, getMyInstModel, mailVerifyModel, mailVerifyStudentIdModel, sendMailModel, userLogOutModel, userSignOutModel, userSignupModel } from "../user.model/user.model";
 import { userChangeInfoDTO, UserDto } from "../user.dto/user.dto";
 
 
@@ -60,4 +60,13 @@ export const getMyInstService = async (
 ):Promise<String> => {
     const result = await getMyInstModel (user_id);
     return result;
-}
+};
+
+export const mailVerifyStudentIdService = async (
+    student_id : string,
+    mailVerification : string
+): Promise<string | null> => {
+    // 인증 코드 검증
+    const token = await mailVerifyStudentIdModel(student_id, mailVerification);
+    return token;
+};
