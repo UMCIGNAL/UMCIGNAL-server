@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { emailValidation, gmailValidation } from '../../security/validation/validation';
-import { changeUserInfoService, getMyInstService, mailVerifyService, sendMailCodeService, userLogOutService, userSignOutService, userSignupService } from '../user.service/user.service';
+import { changeUserInfoService, getMyInstService, mailVerifyService, mailVerifyStudentIdService, sendMailCodeService, userLogOutService, userSignOutService, userSignupService } from '../user.service/user.service';
 import { userChangeInfoDTO, UserDto } from '../user.dto/user.dto';
 import { decodeTokenUserId } from '../../security/JWT/auth.jwt';
 import { check_token, come_back_user } from '../../middlware/softDelete';
@@ -288,6 +288,45 @@ export const getMyInstController = async (
             return res.status(200).json({ result });
         }
     }catch(error: any) {
+        console.error(error);
+        return res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+    }
+};
+
+export const mailVerifyStudentIdController = async (
+    req : Request,
+    res : Response,
+    next : NextFunction
+):Promise<any> => {
+    try {
+        const mailVerification = req.body.mailVerification as string;
+
+        if (!mailVerification) {
+            return res.status(401).json({ message: '인증 코드가 제공되지 않았습니다.' });
+        }
+
+        const student_id = req.body.student_id as string;
+
+        if(!student_id) {
+            return res.status(401).json({ message: '학번이(가) 제공되지 않았습니다.' });
+        }
+
+        // 이메일 인증 코드 검증
+        if(mailVerification.length !== 6) {
+            return res.status(408).json({ message: '인증 코드는 6자리입니다.' });
+        }
+
+        const token = await mailVerifyStudentIdService(student_id, mailVerification);
+
+        if(!token) {
+            return res.status(403).json({ message: '인증 코드가 올바르지 않습니다. 다시 인증해주세요.' });
+        }
+
+        return res.status(200).json({ 
+            message: '메일 인증 완료', 
+            token: token 
+        });
+    } catch (error : any) {
         console.error(error);
         return res.status(500).json({ message: '서버 오류가 발생했습니다.' });
     }
