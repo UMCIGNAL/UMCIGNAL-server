@@ -4,12 +4,12 @@ import { insertCodeController, myRerollController } from './serialCode.controlle
 
 const router = Router();
 
-// router.get('/getCode', getCode);
+router.get('/getCode', getCode);
 router.patch('/insertCode', insertCodeController);
 router.get('/myReroll', myRerollController);
 
 /**
- * @ swagger
+ * @swagger
  * /serialCode/getCode:
  *   get:
  *     summary: 시리얼 코드를 생성합니다.

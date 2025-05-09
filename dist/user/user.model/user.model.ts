@@ -14,6 +14,8 @@ export const sendMailModel = async (
 
     const student_id = email.split('@')[0]; // 앞에 자리 파싱
 
+    console.log('verfication Code : ', verficationCode);
+
     // 이미 가입된 학생인지 확인 (학번으로 check) // 미들웨어에서 처리하게 만들어
     const check_user = await checkUser(student_id);
 
@@ -29,7 +31,6 @@ export const sendMailModel = async (
          WHERE student_id = ?`;
 
         await pool.query(update_validation_code, [verficationCode, null, student_id]);
-
 
         return 0;
     }
