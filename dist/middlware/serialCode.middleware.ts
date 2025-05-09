@@ -8,9 +8,10 @@ export const getCode = async (
                    SET code = ?`;
 
 
-    for(let i = 0; i < 400; i++) {
+    for(let i = 0; i < 100; i++) {
         const code = await generateReferralCode();
 
+        console.log(code);
         await pool.query(query, [code]);
     }
 };
