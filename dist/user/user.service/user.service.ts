@@ -10,7 +10,6 @@ export const sendMailCodeService = async (
     const verficationCode = await generateCode();
 
     await sendEmail(email, verficationCode);
-    console.log(`Verification code for ${email}: ${verficationCode}`);
 
     const user_id = await sendMailModel(email, verficationCode);
 
